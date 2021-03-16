@@ -3,6 +3,8 @@ package com.meritamerica.assignment4;
 import java.io.*;
 import java.util.*;
 
+import org.omg.CORBA.PUBLIC_MEMBER;
+
 public class MeritBank
 {
     private static CDOffering[] listOfCDOffers;
@@ -189,15 +191,29 @@ public class MeritBank
 
     public static double recursiveFutureValue(double amount, int years, double interestRate)
     {
-        // Existing futureValue methods that used to call Math.pow() should now call this method
+        // TODO --- add code
+    	// Existing futureValue methods that used to call Math.pow() should now call this method
     }
 
     public static boolean processTransaction(Transaction transaction) throws NegativeAmountException, ExceedsAvailableBalanceException, ExceedsFraudSuspicionLimitException)
     {
-        /*
+        // TODO --- add new code
+    	/*
         If transaction does not violate any constraints, deposit/withdraw values from the relevant BankAccounts and add the transaction to the relevant BankAccounts
         If the transaction violates any of the basic constraints (negative amount, exceeds available balance) the relevant exception should be thrown and the processing should terminate
         If the transaction violates the $1,000 suspicion limit, it should simply be added to the FraudQueue for future processing
          */
     }
+    
+    public static FraudQueue getFraudQueue()
+    {
+    	// TODO --- add new code
+    }
+    
+    public static BankAccount getBankAccount(long accountId)
+    {
+    	// TODO --- add new code
+    	// return null if account not found
+    }
+   
 }

@@ -48,7 +48,7 @@ public class AccountHolder implements Comparable<AccountHolder>
     /* CHECKING ACCOUNT */
     CheckingAccount addCheckingAccount(double openingBalance) throws ExceedsCombinedBalanceLimitException
     {
-        /*
+        /* TODO -- add new code
         If combined balance limit is exceeded, throw ExceedsCombinedBalanceLimitException
         Should also add a deposit transaction with the opening balance
          */
@@ -114,7 +114,8 @@ public class AccountHolder implements Comparable<AccountHolder>
     /* SAVINGS ACCOUNT */
     SavingsAccount addSavingsAccount(double openingBalance) throws ExceedsCombinedBalanceLimitException
     {
-        /*
+        // TODO -- add new code
+    	/*
         If combined balance limit is exceeded, throw ExceedsCombinedBalanceLimitException
         Should also add a deposit transaction with the opening balance
          */

@@ -2,6 +2,8 @@ package com.meritamerica.assignment4;
 
 public abstract class Transaction
 {
+
+
     public BankAccount getSourceAccount()
     {
 
@@ -46,6 +48,7 @@ public abstract class Transaction
     {
 
     }
+    
     public static Transaction readFromString(String transactionDataString)
     {
 

@@ -1,17 +1,17 @@
 package com.meritamerica.assignment4;
 
 import java.text.*;
-import java.util.Date;
+import java.util.*;
 
-public class BankAccount
+public abstract class BankAccount
 {
-    /* INSTANCE VARIABLES */
+	
     java.util.Date accountOpenedOn;
     protected long accountNumber;
     protected double balance;
     protected double interestRate;
     protected double term;
-
+    
     BankAccount(double balance, double interestRate) //
     {
         this(MeritBank.getNextAccountNumber(), balance, interestRate, new java.util.Date());
@@ -22,21 +22,8 @@ public class BankAccount
         this(MeritBank.getNextAccountNumber(), balance, interestRate, accountOpenedOn);
     }
 
-    abstract BankAccount()
-    {
-        public void addTransaction(Transaction transaction)
-        {
-            //
-        }
-        public List<Transaction> getTransactions()
-        {
-
-        }
-
-    }
-
     BankAccount(long accountNumber, double balance, double interestRate, java.util.Date accountOpenedOn) //
-    {
+    {   	
         this.accountNumber = accountNumber;
         this.balance = balance;
         this.interestRate = interestRate;
@@ -73,6 +60,19 @@ public class BankAccount
         return false;
     }
 
+    public void addTransaction(Transaction transaction)
+    {
+        // TODO -- add new code 
+    	// add transaction as string to file
+    }
+
+    public List<Transaction> getTransactions()
+    {
+    	// TODO -- add new code
+    	// return list of transactions
+        return null; 
+    }
+
     static BankAccount readFromString(String accountData) throws ParseException
     {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -90,9 +90,10 @@ public class BankAccount
         }
         else
         {
-            System.out.println("Data from bank account incorrect");
+            System.err.println("Data from bank account incorrect");
             throw new NumberFormatException();
         }
+        // TODO -- bug fix
         return new BankAccount(tempAcctNum, tempBal, tempIntRate, tempOpenDate);
     }
 
@@ -102,12 +103,11 @@ public class BankAccount
                 tempBalance = String.valueOf(balance),
                 tempIntRate = String.valueOf(interestRate),
                 tempOpenDate = String.valueOf(accountOpenedOn);
-        //tempTerm = String.valueOf(term);
+        
         return tempAcctNum + "," +
                 tempBalance + "," +
                 tempIntRate + "," +
-                tempOpenDate; //+ "," +
-        //tempTerm;
+                tempOpenDate; 
     }
 
 }

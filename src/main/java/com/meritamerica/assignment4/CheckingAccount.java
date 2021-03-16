@@ -5,10 +5,11 @@ import java.util.*;
 
 public class CheckingAccount extends BankAccount
 {
+	private static double checkingInterestRate = 0.0001;
 
     CheckingAccount(double openingBalance)
     {
-        super(openingBalance, 0.0001);
+        super(openingBalance, checkingInterestRate);
     }
 
     CheckingAccount(long accountNumber, double balance, double interestRate, java.util.Date accountOpenedOn)
@@ -25,8 +26,6 @@ public class CheckingAccount extends BankAccount
         String[] tempArr = accountData.split(",");
         if(accountData.length() > 0)
         {
-            /* "1,1000,0.0001,01/01/2020" */
-            /* "a,1000,0.00015,01/01/2020" */
             tempAcctNum = Long.parseLong(tempArr[0]);
             tempBal = Double.parseDouble(tempArr[1]);
             tempIntRate = Double.parseDouble(tempArr[2]);
@@ -34,7 +33,7 @@ public class CheckingAccount extends BankAccount
         }
         else
         {
-            System.out.println("Checking account data format incorrect");
+            System.err.println("Checking account data format incorrect");
             throw new NumberFormatException();
         }
         return new CheckingAccount(tempAcctNum, tempBal, tempIntRate, tempOpenDate);
