@@ -9,6 +9,7 @@ public class MeritBank
 {
     private static CDOffering[] listOfCDOffers;
     private static AccountHolder[] listOfAccountHolders;
+    private static FraudQueue fraudQueue;
     private static long nextAccountNumber = 0L;
 
     static void addAccountHolder(AccountHolder accountHolder)
@@ -244,7 +245,6 @@ public class MeritBank
 
     static AccountHolder[] sortAccountHolders()
     {
-        // --- Sort list of accountHolders by balance and display in output --- //
         Arrays.sort(listOfAccountHolders);
 
         for(int i = 0; i < listOfAccountHolders.length; i++)
@@ -261,11 +261,17 @@ public class MeritBank
         return listOfAccountHolders;
     }
 
-    private static void setNextAccountNumber(long nextAccountNumber){ MeritBank.nextAccountNumber = nextAccountNumber; }
+    private static void setNextAccountNumber(long nextAccountNumber)
+    {
+        MeritBank.nextAccountNumber = nextAccountNumber;
+    }
 
     public static double recursiveFutureValue(double amount, int years, double interestRate)
     {
-        // TODO --- add code
+        double futureVal = amount + (amount * years);
+        if(years <= 0 || amount <= 0 || interestRate <= 0) return futureVal;
+        return recursiveFutureValue(futureVal, --years, interestRate);
+        // TODO --- done
     	// Existing futureValue methods that used to call Math.pow() should now call this method
     }
 
@@ -281,13 +287,15 @@ public class MeritBank
     
     public static FraudQueue getFraudQueue()
     {
-    	// TODO --- add new code
+        return fraudQueue;
     }
     
     public static BankAccount getBankAccount(long accountId)
     {
     	// TODO --- add new code
-    	// return null if account not found
+    	// return null if account not found,
+        // this is to get id for source of txn?
+        return ; // return matching ID to check/save/cd acct
     }
    
 }

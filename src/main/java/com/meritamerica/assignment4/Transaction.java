@@ -1,6 +1,7 @@
 package com.meritamerica.assignment4;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public abstract class Transaction
 {
@@ -62,6 +63,34 @@ public abstract class Transaction
         this.txnDate = date;
     }
 
+    public static Transaction readFromString(String transactionDataString)
+    {
+        // TODO --- add new code
+        //* -1,1,1000.0,01/01/2020 */
+        // above data needs to be parsed
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        long tempAcctNum = 0;
+        double tempBal = 0, tempIntRate = 0;
+        int tempTerm = 0, tempTypeOfTxn = 0;
+        Date tempOpenDate = null;
+        String[] tempArr = accountData.split(",");
+
+        if(accountData.length() > 0)
+        {
+            tempTypeOfTxn = Integer.parseInt(tempArr[0]);
+            tempAcctNum = Long.parseLong(tempArr[1]);
+            tempBal = Double.parseDouble(tempArr[2]);
+            tempIntRate = Double.parseDouble(tempArr[3]);
+            tempOpenDate = dateFormat.parse(tempArr[4]);
+            tempTerm = Integer.parseInt(tempArr[5]);
+        }
+        else
+        {
+            throw new NumberFormatException();
+        }
+        return ;// unsure what to return;
+    }
+
     public String writeToString()
     {
         // TODO --- add new code
@@ -73,23 +102,6 @@ public abstract class Transaction
         catch(Exception e)
         {
             e.printStackTrace();
-        }
-    }
-    
-    public static Transaction readFromString(String transactionDataString)
-    {
-        // TODO --- add new code
-        //* -1,1,1000.0,01/01/2020 */
-        // above data needs to be parse
-        try
-        {
-
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-        return new Transaction() { // pass in txn data here
         }
     }
 

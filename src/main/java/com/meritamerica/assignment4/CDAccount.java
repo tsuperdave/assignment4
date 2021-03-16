@@ -63,9 +63,9 @@ public class CDAccount extends BankAccount
         int tempTerm = 0;
         Date tempOpenDate = null;
         String[] tempArr = accountData.split(",");
+
         if(accountData.length() > 0)
         {
-            /* "9,5000,0.02,01/01/2020,5" */
             tempAcctNum = Long.parseLong(tempArr[0]);
             tempBal = Double.parseDouble(tempArr[1]);
             tempIntRate = Double.parseDouble(tempArr[2]);

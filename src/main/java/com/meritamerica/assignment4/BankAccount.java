@@ -44,7 +44,8 @@ public abstract class BankAccount {
         return getBalance() * Math.pow((1 + getInterestRate()), years);
     }
 
-    java.util.Date getOpenedOn() {
+    java.util.Date getOpenedOn()
+    {
         return accountOpenedOn;
     }
 
@@ -66,7 +67,6 @@ public abstract class BankAccount {
 
     public void addTransaction(Transaction transaction)
     {
-
         return // txn list;
     }
 
