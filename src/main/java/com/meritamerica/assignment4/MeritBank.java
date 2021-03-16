@@ -9,7 +9,6 @@ public class MeritBank
 {
     private static CDOffering[] listOfCDOffers;
     private static AccountHolder[] listOfAccountHolders;
-    private static Transaction[] listOfTxns;
     private static long nextAccountNumber = 0L;
 
     static void addAccountHolder(AccountHolder accountHolder)
@@ -71,11 +70,20 @@ public class MeritBank
         return listOfCDOffers[indexSecondBiggest];
     }
 
-    static void clearCDOfferings(){ listOfCDOffers = null; }
+    static void clearCDOfferings()
+    {
+        listOfCDOffers = null;
+    }
 
-    static void setCDOfferings(CDOffering[] offerings){ listOfCDOffers = offerings; }
+    static void setCDOfferings(CDOffering[] offerings)
+    {
+        listOfCDOffers = offerings;
+    }
 
-    static long getNextAccountNumber(){ return nextAccountNumber++; }
+    static long getNextAccountNumber()
+    {
+        return nextAccountNumber++;
+    }
 
     static double totalBalances()
     {
@@ -139,37 +147,64 @@ public class MeritBank
                     tempAcct.addCheckingAccount(newChk);
 
                     int numOfTxns = sc.nextInt();
-                    if(numOfTxns > 0)
+                    for(int k = 0; k < numOfTxns; k++)
                     {
-                        for(int k = 0; k < numOfTxns; k++)
-                        {
-                            Transaction newTxns = Transaction.readFromString(sc.next);
-                            newChk.addTransaction(newTxns);
-                        }
+                        Transaction newTxns = Transaction.readFromString(sc.next());
+                        newChk.addTransaction(newTxns);
                     }
                 }
-
-                // TODO --- add new code
-                // if num of chk act>0 and txn > 0, then iterate over txn list/file and add new txn to ArrList addTransaction
-                // need to get num of Txn's
-                // iterate over and 'readFromString(sc.next());
-                // add to tempAcct
+                /*
+                Iterate per num of sav accts,
+                parse acct num, bal,int rate, date
+                 */
                 int numOfSavAccts = sc.nextInt();
                 for(int j = 0; j < numOfSavAccts; j++)
                 {
-                    tempAcct.addSavingsAccount(SavingsAccount.readFromString(sc.next()));
-                }
+                    SavingsAccount newSav = SavingsAccount.readFromString(sc.next());
+                    tempAcct.addSavingsAccount(newSav);
 
+                    int numOfTxns = sc.nextInt();
+                    for(int k = 0; k < numOfTxns; k++)
+                    {
+                        Transaction newTxns = Transaction.readFromString(sc.next());
+                        newSav.addTransaction(newTxns);
+                    }
+                }
+                /*
+                Iterate per num of cd accts,
+                parse acct num, bal,int rate, date
+                 */
                 int numOfCDAccts = sc.nextInt();
                 for(int j = 0; j < numOfCDAccts; j++)
                 {
-                    tempAcct.addCDAccount(CDAccount.readFromString(sc.next()));
+                    CDAccount newCD = CDAccount.readFromString(sc.next());
+                    tempAcct.addCDAccount(newCD);
+
+                    int numOfTxns = sc.nextInt();
+                    for(int k = 0; k < numOfTxns; k++)
+                    {
+                        Transaction newTxns = Transaction.readFromString(sc.next());
+                        newCD.addTransaction(newTxns);
+                    }
                 }
 
-                newList[i] = tempAcct;
+                int numInFraudQueue = sc.nextInt();
+                for (int j = 0; j < numInFraudQueue; j++)
+                {
+                    FraudQueue newFraudQ = new FraudQueue();
+                    sc.next();
+                    // TODO --- finish
+                    // determine modifier of txn
+                    // 2 is txfr
+                    // -1 is deposit
+                }
             }
             listOfAccountHolders = newAcctHolderList;
 
+            /*
+            Sorts account holders by current total bal,
+            prints to console
+             */
             sortAccountHolders();
 
         }catch(Exception e)
@@ -190,7 +225,7 @@ public class MeritBank
             bw.write(String.valueOf(listOfCDOffers.length)); bw.newLine();					// num of CD Offers
             for(int i = 0; i < listOfCDOffers.length; i++)
             {
-                bw.write(listOfCDOffers[i].writeToString()); bw.newLine();				// list CD offers
+                bw.write(listOfCDOffers[i].writeToString()); bw.newLine();				    // list CD offers
             }
 
             bw.write(String.valueOf(listOfAccountHolders.length)); bw.newLine();			// num of account holders
