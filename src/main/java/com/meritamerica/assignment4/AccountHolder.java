@@ -3,14 +3,12 @@ package com.meritamerica.assignment4;
 import java.io.BufferedReader;
 public class AccountHolder implements Comparable<AccountHolder>
 {
-    /*INSTANCE VARIABLES*/
-
+    /* INSTANCE VARIABLES */
     private static final double BALANCE_LIMIT = 250000;
     private String firstName;
     private String middleName;
     private String lastName;
     private String ssn;
-    protected static BufferedReader br;
     private CheckingAccount[] checkingAccountList = new CheckingAccount[10];
     private SavingsAccount[] savingsAccountList = new SavingsAccount[10];
     private CDAccount[] cdAccountList = new CDAccount[10];
@@ -192,7 +190,6 @@ public class AccountHolder implements Comparable<AccountHolder>
 
     CDAccount addCDAccount(CDAccount cdAccount)
     {
-        // Should also add a deposit transaction with the opening balance
         if(cdAccountList == null)
         {
             return null;

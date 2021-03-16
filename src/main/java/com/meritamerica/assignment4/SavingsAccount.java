@@ -6,6 +6,8 @@ import java.util.*;
 public class SavingsAccount extends BankAccount
 {
 
+    private static double savingsInterestRate = 0.01;
+
     SavingsAccount(double openingBalance){super(openingBalance, 0.01);		}
 
     SavingsAccount(long accountNumber, double balance, double interestRate, java.util.Date accountOpenedOn)

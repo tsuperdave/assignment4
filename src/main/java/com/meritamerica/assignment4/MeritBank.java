@@ -9,7 +9,8 @@ public class MeritBank
 {
     private static CDOffering[] listOfCDOffers;
     private static AccountHolder[] listOfAccountHolders;
-    private static long nextAccountNumber = 0;
+    private static Transaction[] listOfTxns;
+    private static long nextAccountNumber = 0L;
 
     static void addAccountHolder(AccountHolder accountHolder)
     {
@@ -23,7 +24,10 @@ public class MeritBank
         }
     }
 
-    static AccountHolder[] getAccountHolders(){ return listOfAccountHolders; }
+    static AccountHolder[] getAccountHolders()
+    {
+        return listOfAccountHolders;
+    }
 
     static CDOffering[] getCDOfferings(){ return listOfCDOffers; }
 
@@ -93,43 +97,78 @@ public class MeritBank
 
     static boolean readFromFile(String fileName)
     {
-        // Should also read BankAccount transactions and the FraudQueue
         try(Scanner sc = new Scanner(new FileReader(fileName)))
         {
-            setNextAccountNumber(Long.parseLong(sc.next()));										// store next acct num
-            // -- CD OFFERS -- //
-            CDOffering[] newCDarr = new CDOffering[sc.nextInt()];									// set 3 cd offers
+            setNextAccountNumber(Long.parseLong(sc.next()));
+
+            /*
+             Get # of CD Offers,
+             create new arr to length,
+             iterate over index of arr,
+             add CD offer into to arr after parsing data
+             */
+            CDOffering[] newCDarr = new CDOffering[sc.nextInt()];
             for(int i = 0; i < newCDarr.length; i++)
             {
-                newCDarr[i] = CDOffering.readFromString(sc.next());									// send to CDOffer to return
+                newCDarr[i] = CDOffering.readFromString(sc.next());
             }
             setCDOfferings(newCDarr);
 
-            AccountHolder[] newList = new AccountHolder[Integer.parseInt(sc.next())];									// set new num of acct holders
-            // -- GET ACCT HOLDER INFO AND ADD --//
-            for(int i = 0; i < newList.length; i++)
+            /*
+            Create new AcctHolder list arr,
+            set length to data pulled from txt file,
+            iterate, adding new info on each iteration
+             */
+            AccountHolder[] newAcctHolderList = new AccountHolder[Integer.parseInt(sc.next())];
+            for(int i = 0; i < newAcctHolderList.length; i++)
             {
-                AccountHolder tempAcct = AccountHolder.readFromString(sc.next());					// temp store num of account holders
-                int numOfCheckAccts = sc.nextInt();													// store num of checking accounts
+                /*
+                get AH1 name, ssn, then # of chk accts,
+                create tempAcctHolder var to store info,
+                add this iteration to act holder arr
+                 */
+                AccountHolder tempAcct = AccountHolder.readFromString(sc.next());
+                int numOfCheckAccts = sc.nextInt();
+                /*
+                Iterate per num of chk accts,
+                parse acct num, bal,int rate, date
+                 */
                 for(int j = 0; j < numOfCheckAccts; j++)
                 {
-                    tempAcct.addCheckingAccount(CheckingAccount.readFromString(sc.next()));		// read from str and add obj to Acct Holder
+                    CheckingAccount newChk = CheckingAccount.readFromString(sc.next());
+                    tempAcct.addCheckingAccount(newChk);
+
+                    int numOfTxns = sc.nextInt();
+                    if(numOfTxns > 0)
+                    {
+                        for(int k = 0; k < numOfTxns; k++)
+                        {
+                            Transaction newTxns = Transaction.readFromString(sc.next);
+                            newChk.addTransaction(newTxns);
+                        }
+                    }
                 }
+
+                // TODO --- add new code
+                // if num of chk act>0 and txn > 0, then iterate over txn list/file and add new txn to ArrList addTransaction
+                // need to get num of Txn's
+                // iterate over and 'readFromString(sc.next());
+                // add to tempAcct
                 int numOfSavAccts = sc.nextInt();
                 for(int j = 0; j < numOfSavAccts; j++)
                 {
-                    tempAcct.addSavingsAccount(SavingsAccount.readFromString(sc.next()));		// read from str and add obj to Acct Holder
+                    tempAcct.addSavingsAccount(SavingsAccount.readFromString(sc.next()));
                 }
 
                 int numOfCDAccts = sc.nextInt();
                 for(int j = 0; j < numOfCDAccts; j++)
                 {
-                    tempAcct.addCDAccount(CDAccount.readFromString(sc.next()));					// read from str and add obj to Acct Holder
+                    tempAcct.addCDAccount(CDAccount.readFromString(sc.next()));
                 }
 
-                newList[i] = tempAcct;													// create new Acct Holder list Array with new values
+                newList[i] = tempAcct;
             }
-            listOfAccountHolders = newList;
+            listOfAccountHolders = newAcctHolderList;
 
             sortAccountHolders();
 
@@ -195,7 +234,7 @@ public class MeritBank
     	// Existing futureValue methods that used to call Math.pow() should now call this method
     }
 
-    public static boolean processTransaction(Transaction transaction) throws NegativeAmountException, ExceedsAvailableBalanceException, ExceedsFraudSuspicionLimitException)
+    public static boolean processTransaction(Transaction transaction) throws NegativeAmountException, ExceedsAvailableBalanceException, ExceedsFraudSuspicionLimitException
     {
         // TODO --- add new code
     	/*
