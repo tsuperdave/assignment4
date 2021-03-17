@@ -9,10 +9,8 @@ import org.omg.CORBA.PUBLIC_MEMBER;
 
 public class MeritBank
 {
-    private static final int FRAUD_SUSP_LIMIT = 1000;
     private static CDOffering[] listOfCDOffers;
     private static AccountHolder[] listOfAccountHolders;
-    private static FraudQueue fraudQueue = new FraudQueue();
     private static long nextAccountNumber = 0L;
 
     static void addAccountHolder(AccountHolder accountHolder)
@@ -197,15 +195,12 @@ public class MeritBank
                 parse source, target, amt, date
                  */
                 int numInFraudQueue = sc.nextInt();
+                FraudQueue fraudQueue = new FraudQueue();
                 for (int j = 0; j < numInFraudQueue; j++)
                 {
                     /* "2,4,5000,01/05/2020" */
-                    FraudQueue newFraudQ = new FraudQueue();
-                    sc.next();
-                    // TODO --- finish
-                    // determine modifier of txn
-                    // 2 is txfr
-                    // -1 is deposit
+                    fraudQueue.addTransaction(new Transaction(sc.next));
+                    // TODO --- done?
                 }
             }
             listOfAccountHolders = newAcctHolderList;
@@ -306,7 +301,7 @@ public class MeritBank
             throw new ExceedsFraudSuspicionLimitException();
         }
         // process txn's
-        if(// modifier of first char in txn line is 2, transfer)
+        // modifier of first char in txn line is 2, transfer)
         transaction.getTargetAccount().balance += transaction.getAmount();
         return true;
     }

@@ -7,58 +7,30 @@ import java.util.Date;
 
 public class CDAccount extends BankAccount
 {
-    private int term;
-    java.util.Date startDate;
+
+    protected CDOffering cdOffering;
 
     CDAccount(CDOffering offering, double balance)
     {
-        super(balance, offering.getInterestRate(), new Date());
-        this.term = offering.getTerm();
+        super(balance, offering.getInterestRate(), new java.util.Date());
+        this.cdOffering = offering;
     }
 
-    CDAccount(long accountNumber, double balance, double interestRate, Date accountOpenedOn, int term)
+    CDAccount(long accountNumber, double balance, double interestRate, int term, Date accountOpenedOn)
     {
         super(accountNumber, balance, interestRate, accountOpenedOn);
-        this.term = term;
+        this.cdOffering = new CDOffering(term, interestRate);
     }
 
     int getTerm()
     {
-        return this.term;
+        return this.cdOffering.getTerm();
     }
 
-    @Override
-    boolean withdraw(double amount)
+    public double futureValue()
     {
-        // --- if withdraw amt is less than == bal and greater than 0 AND if term has been reached vs openDate, true --- //
-        if(amount <= getBalance()  && amount > 0 && new Date().getYear() > getOpenedOn().getYear() + getTerm())
-        {
-            this.balance -= amount;
-            return true;
-        }
-        System.out.println("Cannot withdraw. Check balance or ensure term has been reached");
-        return false;
-    }
-
-    @Override
-    boolean deposit (double amount)
-    {
-        // --- deposit amount has to be above 0 and the open date has reached term --- //
-        if(amount > 0 && new Date().getYear() > getOpenedOn().getYear() + getTerm())
-        {
-            this.balance += amount;
-            return true;
-        }
-        System.out.println("Cannot deposit. Check balance or ensure term has been reached");
-        return false;
-    }
-
-    public static double recursiveFutureValue(double amount, double years, double interestRate)
-    {
-        double futureVal = amount + (amount * years);
-        if(years <= 1 || amount <= 0 || interestRate <= 0) return futureVal;
-        return recursiveFutureValue(futureVal, --years, interestRate);
-        // TODO --- done
+        // TODO --- add new code
+        return BankAccount.recursiveFutureValue();
     }
 
     static CDAccount readFromString(String accountData) throws ParseException
@@ -99,5 +71,18 @@ public class CDAccount extends BankAccount
                 tempOpenDate + "," +
                 tempTerm;
     }
+
+    @Override
+    boolean withdraw(double amount)
+    {
+        return false;
+    }
+
+    @Override
+    boolean deposit (double amount)
+    {
+        return false;
+    }
+
 
 }

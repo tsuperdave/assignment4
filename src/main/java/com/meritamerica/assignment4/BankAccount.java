@@ -42,12 +42,12 @@ public abstract class BankAccount {
         return interestRate;
     }
 
-    public static double recursiveFutureValue(double amount, int years, double interestRate)
+    public static double recursiveFutureValue(double amount, int term, double interestRate)
     {
-        double futureVal = amount + (amount * years);
-        if(years <= 1 || amount <= 0 || interestRate <= 0) return futureVal;
-        return recursiveFutureValue(futureVal, --years, interestRate);
         // TODO --- done
+        double futureVal = amount + (amount * term);
+        if(term <= 1 || amount <= 0 || interestRate <= 0) return futureVal;
+        return recursiveFutureValue(futureVal, --term, interestRate);
     }
 
     java.util.Date getOpenedOn()
@@ -79,7 +79,19 @@ public abstract class BankAccount {
     public List<Transaction> getTransactions()
     {
         // TODO --- done?
-        listOfTransactions.listIterator().next();
+        for(Transaction txn: listOfTransactions)
+        {
+            System.out.println(txn);
+            listOfTransactions.add(txn);
+        }
+        /*
+        Iterator<Transaction> txnIt = listOfTransactions.iterator();
+        while(txnIt.hasNext())
+        {
+            System.out.println(txn);
+            listOfTransactions.add(txn);
+        }
+        */
         return listOfTransactions;
     }
 

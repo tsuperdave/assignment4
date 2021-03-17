@@ -11,9 +11,15 @@ public class CDOffering
         this.interestRate = interestRate;
     }
 
-    int getTerm(){ return term; }
+    int getTerm()
+    {
+        return this.term;
+    }
 
-    double getInterestRate(){ return interestRate; }
+    double getInterestRate()
+    {
+        return this.interestRate;
+    }
 
     static CDOffering readFromString(String cdOfferingDataString)
     {
@@ -32,6 +38,9 @@ public class CDOffering
         return new CDOffering(tempTerm, tempIntRate);
     }
 
-    String writeToString(){	return String.valueOf(this.term) + "," + interestRate; }
+    String writeToString()
+    {
+        return String.valueOf(this.term) + "," + this.interestRate;
+    }
 
 }

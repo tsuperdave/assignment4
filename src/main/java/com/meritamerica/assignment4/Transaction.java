@@ -1,5 +1,6 @@
 package com.meritamerica.assignment4;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -7,19 +8,20 @@ public abstract class Transaction
 {
     // TODO --- new class
     // set new instance vars?
+    private final double FRAUD_REVIEW_TRIGGER = 1000.0;
+    protected static BankAccount sourceAcct;
+    protected static BankAccount targetAcct;
     SimpleDateFormat dateFormat;
+    java.util.Date txnDate;
     private String rejectReason;
     private double amount;
-    private static BankAccount sourceAcct;
-    private static BankAccount targetAcct;
     private boolean isProcessed;
-    java.util.Date txnDate;
+
 
     public BankAccount getSourceAccount()
     {
         // TODO --- done
-        // get target account for txn
-        return this.sourceAcct;
+        return sourceAcct;
     }
 
     public void setSourceAccount(BankAccount sourceAccount)
@@ -29,8 +31,6 @@ public abstract class Transaction
 
     public BankAccount getTargetAccount()
     {
-        // TODO --- done
-        //  get target account for txn
         return targetAcct;
     }
 
@@ -53,7 +53,6 @@ public abstract class Transaction
     public java.util.Date getTransactionDate()
     {
         // TODO --- done
-        // return txn date
         return txnDate;
     }
 
@@ -62,8 +61,7 @@ public abstract class Transaction
         this.txnDate = date;
     }
 
-    public static Transaction readFromString(String transactionDataString)
-    {
+    public static Transaction readFromString(String transactionDataString) throws ParseException {
         // TODO --- add new code
         //* -1,1,1000.0,01/01/2020 */
         // parsed data. return Obj dependent on first mod in string
@@ -73,22 +71,25 @@ public abstract class Transaction
         int tempTerm = 0, tempTypeOfTxn = 0;
         Date tempOpenDate = null;
         String[] tempArr = transactionDataString.split(",");
-        try
+
+        if (transactionDataString.length() > 0)
         {
-            if (transactionDataString.length() > 0)
-            {
-                tempTypeOfTxn = Integer.parseInt(tempArr[0]);
-                tempAcctNum = Long.parseLong(tempArr[1]);
-                tempAmt = Double.parseDouble(tempArr[2]);
-                tempIntRate = Double.parseDouble(tempArr[3]);
-                tempOpenDate = dateFormat.parse(tempArr[4]);
-                tempTerm = Integer.parseInt(tempArr[5]);
-            }
+            tempTypeOfTxn = Integer.parseInt(tempArr[0]);
+            tempAcctNum = Long.parseLong(tempArr[1]);
+            tempAmt = Double.parseDouble(tempArr[2]);
+            tempIntRate = Double.parseDouble(tempArr[3]);
+            tempOpenDate = dateFormat.parse(tempArr[4]);
+            tempTerm = Integer.parseInt(tempArr[5]);
         }
-        catch(Exception e)
+        else
         {
             throw new NumberFormatException();
         }
+
+        /*
+        Returns type of TXN based off first value on TXN string (-1, 1 or 2)
+        Assuming can put if statements after Exception, since data parse checks are first
+         */
         if(tempTypeOfTxn < 0 && tempAmt > 0)
         {
             return new DepositTransaction(targetAcct, tempAmt);
@@ -102,14 +103,7 @@ public abstract class Transaction
 
     public String writeToString()
     {
-        // TODO --- add new code
-        // parse data back to str for writing to file
-        try {
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "";
+        return null;
     }
 
     public abstract void process() throws NegativeAmountException, ExceedsAvailableBalanceException, ExceedsFraudSuspicionLimitException;
@@ -117,10 +111,8 @@ public abstract class Transaction
 
     public boolean isProcessedByFraudTeam()
     {
-        // TODO --- add code
-        // if amount > 1k, will need to be processed
-        // once processed and determined no fraud, return true, else false
-        return false;
+        // TODO --- done
+        return isProcessed;
     }
 
     public void setProcessedByFraudTeam(boolean isProcessed)
@@ -130,9 +122,8 @@ public abstract class Transaction
 
     public String getRejectionReason()
     {
-        // TODO --- add new code
-        // figure out what returns reason why txn was denied/rejected and return
-        return "";
+        // TODO --- done
+        return rejectReason;
     }
 
     public void setRejectionReason(String reason)

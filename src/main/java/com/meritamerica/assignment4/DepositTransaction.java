@@ -4,6 +4,13 @@ public class DepositTransaction extends Transaction
 {
     DepositTransaction(BankAccount targetAccount, double amount)
     {
-        super(targetAccount, amount);
+
+    }
+
+    // TODO --- done
+    @Override
+    public void process() throws NegativeAmountException, ExceedsAvailableBalanceException, ExceedsFraudSuspicionLimitException
+    {
+
     }
 }
