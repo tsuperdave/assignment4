@@ -17,12 +17,12 @@ public abstract class BankAccount {
         this(MeritBank.getNextAccountNumber(), balance, interestRate, new java.util.Date());
     }
 
-    BankAccount(double balance, double interestRate, java.util.Date accountOpenedOn) //
+    BankAccount(double balance, double interestRate, Date accountOpenedOn) //
     {
         this(MeritBank.getNextAccountNumber(), balance, interestRate, accountOpenedOn);
     }
 
-    BankAccount(long accountNumber, double balance, double interestRate, java.util.Date accountOpenedOn) //
+    BankAccount(long accountNumber, double balance, double interestRate, Date accountOpenedOn) //
     {
         this.accountNumber = accountNumber;
         this.balance = balance;
@@ -50,7 +50,7 @@ public abstract class BankAccount {
         return recursiveFutureValue(futureVal, --term, interestRate);
     }
 
-    java.util.Date getOpenedOn()
+    Date getOpenedOn()
     {
         return accountOpenedOn;
     }

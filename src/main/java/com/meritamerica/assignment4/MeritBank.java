@@ -11,7 +11,9 @@ public class MeritBank
 {
     private static CDOffering[] listOfCDOffers;
     private static AccountHolder[] listOfAccountHolders;
-    private static long nextAccountNumber = 0L;
+    static FraudQueue fraudQueue = new FraudQueue();
+    private static long nextAccountNumber = 1L;
+    static long accountNumber;
 
     static void addAccountHolder(AccountHolder accountHolder)
     {
@@ -105,6 +107,8 @@ public class MeritBank
 
     static boolean readFromFile(String fileName)
     {
+        // TODO --- debug
+        // debug FraudQueue txn adding
         try(Scanner sc = new Scanner(new FileReader(fileName)))
         {
             setNextAccountNumber(Long.parseLong(sc.next()));
@@ -195,13 +199,16 @@ public class MeritBank
                 parse source, target, amt, date
                  */
                 int numInFraudQueue = sc.nextInt();
-                FraudQueue fraudQueue = new FraudQueue();
                 for (int j = 0; j < numInFraudQueue; j++)
                 {
                     /* "2,4,5000,01/05/2020" */
                     fraudQueue.addTransaction(new Transaction(sc.next));
                     // TODO --- done?
                 }
+                System.out.println(fraudQueue);
+
+
+
             }
             listOfAccountHolders = newAcctHolderList;
 
@@ -210,13 +217,13 @@ public class MeritBank
             prints to console
              */
             sortAccountHolders();
-
+`
         }catch(Exception e)
         {
             e.printStackTrace();
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     static boolean writeToFile(String fileName)
@@ -280,31 +287,68 @@ public class MeritBank
 
     public static boolean processTransaction(Transaction transaction) throws NegativeAmountException, ExceedsAvailableBalanceException, ExceedsFraudSuspicionLimitException
     {
-        // TODO --- add new code
+        // TODO --- done?
     	/*
         If transaction does not violate any constraints, deposit/withdraw values from the relevant BankAccounts and add the transaction to the relevant BankAccounts
         If the transaction violates any of the basic constraints (negative amount, exceeds available balance) the relevant exception should be thrown and the processing should terminate i.e. false
         If the transaction violates the $1,000 suspicion limit, it should simply be added to the FraudQueue for future processing
         Need to process Source/Target
+        Will need to setup instances of withdraw, deposit and transfer
          */
-        if(transaction.getAmount() < 0)
-        {
-            System.out.println("Transaction mount cannot be negative");
-            throw new NegativeAmountException();
-            return false;
-        }else if(transaction.getAmount() > transaction.getTargetAccount().balance)
-        {
-            System.out.println("Amount exceeds available balance");
-            throw new ExceedsAvailableBalanceException();
-            return false;
-        }else if(transaction.getAmount() > FRAUD_SUSP_LIMIT)
-        {
-            fraudQueue.addTransaction(transaction);
-            throw new ExceedsFraudSuspicionLimitException();
+        BankAccount sourceAcct = transaction.getSourceAccount();
+        BankAccount targetAcct = transaction.getTargetAccount();
+        if (sourceAcct != null) {
+            /*
+            Processing instances of a Withdrawal
+             */
+            if (transaction instanceof WithdrawTransaction) {
+                if (transaction.getAmount() < 0) {
+                    throw new NegativeAmountException("Unable to process request. Transaction amount must be greater than $0");
+                }
+                if (transaction.getAmount() < -1000) {
+                    fraudQueue.addTransaction(transaction);
+                    throw new ExceedsFraudSuspicionLimitException("Possible fraud detected. Transaction is being sent to fraud detection services for review");
+                }
+                if (targetAcct.getBalance() + transaction.getAmount() < 0) {
+                    throw new ExceedsAvailableBalanceException("Insufficient Funds");
+                }
+                return true;
+            }
+        /*
+        Processing instances of a Deposit
+         */
+            if (transaction instanceof DepositTransaction) {
+                if (transaction.getAmount() < 0) {
+                    throw new NegativeAmountException("Unable to process request. Transaction amount must be greater than $0");
+                }
+                if (transaction.getAmount() > 1000) {
+                    fraudQueue.addTransaction(transaction);
+                    throw new ExceedsFraudSuspicionLimitException("Possible fraud detected. Transaction is being sent to fraud detection services for review");
+                }
+                return true;
+            }
+        /*
+        Processing instances of a Transfer
+         */
+            if (transaction instanceof TransferTransaction)
+            {
+                if (sourceAcct.getBalance() < transaction.getAmount())
+                {
+                    throw new ExceedsAvailableBalanceException("Insufficient Funds");
+                }
+                if (transaction.getAmount() < 0) {
+                    throw new NegativeAmountException("Unable to process request. Transaction amount must be greater than $0");
+                }
+                if (transaction.getAmount() > 1000) {
+                    throw new ExceedsFraudSuspicionLimitException("Possible fraud detected. Transaction is being sent to fraud detection services for review");
+                }
+            }else
+            {
+                sourceAcct.withdraw(transaction.amount);
+                targetAcct.deposit(transaction.amount);
+            }
+            return true;
         }
-        // process txn's
-        // modifier of first char in txn line is 2, transfer)
-        transaction.getTargetAccount().balance += transaction.getAmount();
         return true;
     }
     
@@ -314,9 +358,35 @@ public class MeritBank
     }
     
     public static BankAccount getBankAccount(long accountId) {
-        // TODO --- add new code
-        // return null if account not found,
-        // this is to get id for source of txn?
-        return; // return matching ID to check/save/cd acct
+        // TODO --- done?
+        for (AccountHolder ah: listOfAccountHolders)
+        {
+            // iterate over checking and match ID to current iteration in any one of the iterations
+            for(int i = 0; i < listOfAccountHolders.length; i++)
+            {
+                if (accountId == ah.getCheckingAccounts()[i].accountNumber)
+                {
+                    return ah.getCheckingAccounts()[i];
+                }
+            }
+            // iterate over savings and match ID to current iteration in any one of the iterations
+            for(int i = 0; i < listOfAccountHolders.length; i++)
+            {
+                if (accountId == ah.getSavingsAccounts()[i].accountNumber)
+                {
+                    return ah.getSavingsAccounts()[i];
+                }
+            }
+            // iterate over CD accts and match ID to current iteration in any one of the iterations
+            for(int i = 0; i < listOfAccountHolders.length; i++)
+            {
+                if (accountId == ah.getCDAccounts()[i].accountNumber)
+                {
+                    return ah.getCDAccounts()[i];
+                }
+            }
+        }
+        // return null if acct not found
+        return null;
     }
 }
