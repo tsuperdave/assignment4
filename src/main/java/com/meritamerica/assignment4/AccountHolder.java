@@ -76,7 +76,7 @@ public class AccountHolder implements Comparable<AccountHolder>
         return newCheckingAccount;
     }
 
-    CheckingAccount addCheckingAccount(CheckingAccount checkingAccount) throws ExceedsCombinedBalanceLimitException
+    CheckingAccount addCheckingAccount(CheckingAccount checkingAccount) throws ExceedsCombinedBalanceLimitException, ExceedsFraudSuspicionLimitException, NegativeAmountException
     {
         // TODO --- add new code
         /*
@@ -141,7 +141,7 @@ public class AccountHolder implements Comparable<AccountHolder>
     }
 
     /* SAVINGS ACCOUNT */
-    SavingsAccount addSavingsAccount(double openingBalance) throws ExceedsCombinedBalanceLimitException
+    SavingsAccount addSavingsAccount(double openingBalance) throws ExceedsCombinedBalanceLimitException, ExceedsFraudSuspicionLimitException, NegativeAmountException
     {
         // TODO -- add new code
         /*
@@ -173,7 +173,7 @@ public class AccountHolder implements Comparable<AccountHolder>
         return newSavingsAccount;
     }
 
-    SavingsAccount addSavingsAccount(SavingsAccount savingsAccount) throws ExceedsCombinedBalanceLimitException
+    SavingsAccount addSavingsAccount(SavingsAccount savingsAccount) throws ExceedsCombinedBalanceLimitException, ExceedsFraudSuspicionLimitException, NegativeAmountException
     {
         // TODO --- add new code
         /*
@@ -238,7 +238,7 @@ public class AccountHolder implements Comparable<AccountHolder>
     }
 
     /* CD ACCOUNT */
-    CDAccount addCDAccount(CDOffering offering, double openingBalance)
+    CDAccount addCDAccount(CDOffering offering, double openingBalance) throws ExceedsFraudSuspicionLimitException, NegativeAmountException
     {
         // TODO --- add new code
         // Should also add a deposit transaction with the opening balance

@@ -221,6 +221,7 @@ public class MeritBank
 
     static boolean writeToFile(String fileName)
     {
+        // TODO --- debug
         // Should also read BankAccount transactions and the FraudQueue
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(fileName)))
         {
@@ -284,6 +285,7 @@ public class MeritBank
         If transaction does not violate any constraints, deposit/withdraw values from the relevant BankAccounts and add the transaction to the relevant BankAccounts
         If the transaction violates any of the basic constraints (negative amount, exceeds available balance) the relevant exception should be thrown and the processing should terminate i.e. false
         If the transaction violates the $1,000 suspicion limit, it should simply be added to the FraudQueue for future processing
+        Need to process Source/Target
          */
         if(transaction.getAmount() < 0)
         {
