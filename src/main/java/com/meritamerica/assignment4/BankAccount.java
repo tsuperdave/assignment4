@@ -5,6 +5,8 @@ import java.util.*;
 
 public abstract class BankAccount {
 
+
+    private List<Transaction> listOfTransactions;
     java.util.Date accountOpenedOn;
     protected long accountNumber;
     protected double balance;
@@ -40,8 +42,12 @@ public abstract class BankAccount {
         return interestRate;
     }
 
-    double futureValue(int years) {
-        return getBalance() * Math.pow((1 + getInterestRate()), years);
+    public static double recursiveFutureValue(double amount, int years, double interestRate)
+    {
+        double futureVal = amount + (amount * years);
+        if(years <= 1 || amount <= 0 || interestRate <= 0) return futureVal;
+        return recursiveFutureValue(futureVal, --years, interestRate);
+        // TODO --- done
     }
 
     java.util.Date getOpenedOn()
@@ -67,15 +73,14 @@ public abstract class BankAccount {
 
     public void addTransaction(Transaction transaction)
     {
-        return // txn list;
+        listOfTransactions.add(transaction);
     }
 
     public List<Transaction> getTransactions()
     {
-        // TODO --- add code
-        // will need to utilize interface somehow
-        // possible comparator. Need to return any txns over 1k to list?
-        return txnList;
+        // TODO --- done?
+        listOfTransactions.listIterator().next();
+        return listOfTransactions;
     }
 
     String writeToString()

@@ -10,8 +10,8 @@ public abstract class Transaction
     SimpleDateFormat dateFormat;
     private String rejectReason;
     private double amount;
-    private BankAccount sourceAcct;
-    private BankAccount targetAcct;
+    private static BankAccount sourceAcct;
+    private static BankAccount targetAcct;
     private boolean isProcessed;
     java.util.Date txnDate;
 
@@ -19,7 +19,7 @@ public abstract class Transaction
     {
         // TODO --- done
         // get target account for txn
-        return sourceAcct;
+        return this.sourceAcct;
     }
 
     public void setSourceAccount(BankAccount sourceAccount)
@@ -41,9 +41,8 @@ public abstract class Transaction
 
     public double getAmount()
     {
-        // TODO --- add new code
-        // get amount of txn from source
-        return amount;
+        // TODO --- done
+        return this.amount;
     }
 
     public void setAmount(double amount)
@@ -67,55 +66,61 @@ public abstract class Transaction
     {
         // TODO --- add new code
         //* -1,1,1000.0,01/01/2020 */
-        // above data needs to be parsed
+        // parsed data. return Obj dependent on first mod in string
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         long tempAcctNum = 0;
-        double tempBal = 0, tempIntRate = 0;
+        double tempAmt = 0, tempIntRate = 0;
         int tempTerm = 0, tempTypeOfTxn = 0;
         Date tempOpenDate = null;
-        String[] tempArr = accountData.split(",");
-
-        if(accountData.length() > 0)
+        String[] tempArr = transactionDataString.split(",");
+        try
         {
-            tempTypeOfTxn = Integer.parseInt(tempArr[0]);
-            tempAcctNum = Long.parseLong(tempArr[1]);
-            tempBal = Double.parseDouble(tempArr[2]);
-            tempIntRate = Double.parseDouble(tempArr[3]);
-            tempOpenDate = dateFormat.parse(tempArr[4]);
-            tempTerm = Integer.parseInt(tempArr[5]);
+            if (transactionDataString.length() > 0)
+            {
+                tempTypeOfTxn = Integer.parseInt(tempArr[0]);
+                tempAcctNum = Long.parseLong(tempArr[1]);
+                tempAmt = Double.parseDouble(tempArr[2]);
+                tempIntRate = Double.parseDouble(tempArr[3]);
+                tempOpenDate = dateFormat.parse(tempArr[4]);
+                tempTerm = Integer.parseInt(tempArr[5]);
+            }
         }
-        else
+        catch(Exception e)
         {
             throw new NumberFormatException();
         }
-        return ;// unsure what to return;
+        if(tempTypeOfTxn < 0 && tempAmt > 0)
+        {
+            return new DepositTransaction(targetAcct, tempAmt);
+        }else if(tempTypeOfTxn < 0 && tempAmt < 0)
+        {
+            return new WithdrawTransaction(targetAcct, tempAmt);
+        }
+        return new TransferTransaction(sourceAcct, targetAcct, tempAmt);
+
     }
 
     public String writeToString()
     {
         // TODO --- add new code
         // parse data back to str for writing to file
-        try
-        {
+        try {
 
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        return "";
     }
 
-    public abstract void process() throws NegativeAmountException, ExceedsAvailableBalanceException, ExceedsFraudSuspicionLimitException
-    {
-        // TODO --- add new code
-        //
-    }
+    public abstract void process() throws NegativeAmountException, ExceedsAvailableBalanceException, ExceedsFraudSuspicionLimitException;
+        // TODO --- done
 
     public boolean isProcessedByFraudTeam()
     {
         // TODO --- add code
         // if amount > 1k, will need to be processed
         // once processed and determined no fraud, return true, else false
+        return false;
     }
 
     public void setProcessedByFraudTeam(boolean isProcessed)
@@ -127,6 +132,7 @@ public abstract class Transaction
     {
         // TODO --- add new code
         // figure out what returns reason why txn was denied/rejected and return
+        return "";
     }
 
     public void setRejectionReason(String reason)

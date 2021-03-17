@@ -1,15 +1,18 @@
 package com.meritamerica.assignment4;
 
 import java.io.*;
+import java.sql.SQLOutput;
 import java.util.*;
 
+import com.sun.prism.shader.Solid_ImagePattern_Loader;
 import org.omg.CORBA.PUBLIC_MEMBER;
 
 public class MeritBank
 {
+    private static final int FRAUD_SUSP_LIMIT = 1000;
     private static CDOffering[] listOfCDOffers;
     private static AccountHolder[] listOfAccountHolders;
-    private static FraudQueue fraudQueue;
+    private static FraudQueue fraudQueue = new FraudQueue();
     private static long nextAccountNumber = 0L;
 
     static void addAccountHolder(AccountHolder accountHolder)
@@ -29,16 +32,19 @@ public class MeritBank
         return listOfAccountHolders;
     }
 
-    static CDOffering[] getCDOfferings(){ return listOfCDOffers; }
+    static CDOffering[] getCDOfferings()
+    {
+        return listOfCDOffers;
+    }
 
     static CDOffering getBestCDOffering(double depositAmount)
     {
         if(listOfCDOffers == null) return null;
-        double stored = futureValue(depositAmount, listOfCDOffers[0].getInterestRate(), listOfCDOffers[0].getTerm());
+        double stored = recursiveFutureValue(depositAmount, listOfCDOffers[0].getInterestRate(), listOfCDOffers[0].getTerm());
         int indexBiggest = 0;
         for(int i = 1; i < listOfCDOffers.length; i++)
         {
-            double tempStored = futureValue(depositAmount, listOfCDOffers[i].getInterestRate(), listOfCDOffers[i].getTerm());
+            double tempStored = recursiveFutureValue(depositAmount, listOfCDOffers[i].getInterestRate(), listOfCDOffers[i].getTerm());
             if(tempStored > stored)
             {
                 stored = tempStored;
@@ -51,13 +57,13 @@ public class MeritBank
     static CDOffering getSecondBestCDOffering(double depositAmount)
     {
         if(listOfCDOffers == null) return null;
-        double biggest = futureValue(depositAmount, listOfCDOffers[0].getInterestRate(), listOfCDOffers[0].getTerm());
-        double secondBiggest = futureValue(depositAmount, listOfCDOffers[0].getInterestRate(), listOfCDOffers[0].getTerm());
+        double biggest = recursiveFutureValue(depositAmount, listOfCDOffers[0].getInterestRate(), listOfCDOffers[0].getTerm());
+        double secondBiggest = recursiveFutureValue(depositAmount, listOfCDOffers[0].getInterestRate(), listOfCDOffers[0].getTerm());
         int indexBiggest = 0;
         int indexSecondBiggest = 0;
         for(int i = 1; i < listOfCDOffers.length; i++)
         {
-            double tempStored = futureValue(depositAmount, listOfCDOffers[i].getInterestRate(), listOfCDOffers[i].getTerm());
+            double tempStored = recursiveFutureValue(depositAmount, listOfCDOffers[i].getInterestRate(), listOfCDOffers[i].getTerm());
             if(tempStored > biggest)
             {
                 indexSecondBiggest = indexBiggest;
@@ -97,11 +103,6 @@ public class MeritBank
             }
         }
         return total;
-    }
-
-    public static double futureValue(double presentValue, double interestRate, int term)
-    {
-        return presentValue * Math.pow((1 + interestRate), term);
     }
 
     static boolean readFromFile(String fileName)
@@ -154,6 +155,7 @@ public class MeritBank
                         newChk.addTransaction(newTxns);
                     }
                 }
+
                 /*
                 Iterate per num of sav accts,
                 parse acct num, bal,int rate, date
@@ -171,6 +173,7 @@ public class MeritBank
                         newSav.addTransaction(newTxns);
                     }
                 }
+
                 /*
                 Iterate per num of cd accts,
                 parse acct num, bal,int rate, date
@@ -189,9 +192,14 @@ public class MeritBank
                     }
                 }
 
+                /*
+                Iterate per num of txn for fraud queue,
+                parse source, target, amt, date
+                 */
                 int numInFraudQueue = sc.nextInt();
                 for (int j = 0; j < numInFraudQueue; j++)
                 {
+                    /* "2,4,5000,01/05/2020" */
                     FraudQueue newFraudQ = new FraudQueue();
                     sc.next();
                     // TODO --- finish
@@ -266,13 +274,12 @@ public class MeritBank
         MeritBank.nextAccountNumber = nextAccountNumber;
     }
 
-    public static double recursiveFutureValue(double amount, int years, double interestRate)
+    public static double recursiveFutureValue(double amount, double years, double interestRate)
     {
         double futureVal = amount + (amount * years);
-        if(years <= 0 || amount <= 0 || interestRate <= 0) return futureVal;
+        if(years <= 1 || amount <= 0 || interestRate <= 0) return futureVal;
         return recursiveFutureValue(futureVal, --years, interestRate);
         // TODO --- done
-    	// Existing futureValue methods that used to call Math.pow() should now call this method
     }
 
     public static boolean processTransaction(Transaction transaction) throws NegativeAmountException, ExceedsAvailableBalanceException, ExceedsFraudSuspicionLimitException
@@ -280,9 +287,28 @@ public class MeritBank
         // TODO --- add new code
     	/*
         If transaction does not violate any constraints, deposit/withdraw values from the relevant BankAccounts and add the transaction to the relevant BankAccounts
-        If the transaction violates any of the basic constraints (negative amount, exceeds available balance) the relevant exception should be thrown and the processing should terminate
+        If the transaction violates any of the basic constraints (negative amount, exceeds available balance) the relevant exception should be thrown and the processing should terminate i.e. false
         If the transaction violates the $1,000 suspicion limit, it should simply be added to the FraudQueue for future processing
          */
+        if(transaction.getAmount() < 0)
+        {
+            System.out.println("Transaction mount cannot be negative");
+            throw new NegativeAmountException();
+            return false;
+        }else if(transaction.getAmount() > transaction.getTargetAccount().balance)
+        {
+            System.out.println("Amount exceeds available balance");
+            throw new ExceedsAvailableBalanceException();
+            return false;
+        }else if(transaction.getAmount() > FRAUD_SUSP_LIMIT)
+        {
+            fraudQueue.addTransaction(transaction);
+            throw new ExceedsFraudSuspicionLimitException();
+        }
+        // process txn's
+        if(// modifier of first char in txn line is 2, transfer)
+        transaction.getTargetAccount().balance += transaction.getAmount();
+        return true;
     }
     
     public static FraudQueue getFraudQueue()
@@ -290,12 +316,10 @@ public class MeritBank
         return fraudQueue;
     }
     
-    public static BankAccount getBankAccount(long accountId)
-    {
-    	// TODO --- add new code
-    	// return null if account not found,
+    public static BankAccount getBankAccount(long accountId) {
+        // TODO --- add new code
+        // return null if account not found,
         // this is to get id for source of txn?
-        return ; // return matching ID to check/save/cd acct
+        return; // return matching ID to check/save/cd acct
     }
-   
 }

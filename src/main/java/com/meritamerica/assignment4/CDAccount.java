@@ -22,7 +22,10 @@ public class CDAccount extends BankAccount
         this.term = term;
     }
 
-    int getTerm(){ return this.term; }
+    int getTerm()
+    {
+        return this.term;
+    }
 
     @Override
     boolean withdraw(double amount)
@@ -50,9 +53,12 @@ public class CDAccount extends BankAccount
         return false;
     }
 
-    double futureValue()
+    public static double recursiveFutureValue(double amount, double years, double interestRate)
     {
-        return getBalance() * Math.pow((1 + getInterestRate()), term);
+        double futureVal = amount + (amount * years);
+        if(years <= 1 || amount <= 0 || interestRate <= 0) return futureVal;
+        return recursiveFutureValue(futureVal, --years, interestRate);
+        // TODO --- done
     }
 
     static CDAccount readFromString(String accountData) throws ParseException
