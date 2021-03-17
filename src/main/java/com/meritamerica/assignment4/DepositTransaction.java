@@ -11,4 +11,8 @@ public class DepositTransaction extends Transaction
         this.amount = amount;
         this.txnDate = new Date();
     }
+    @Override
+    public void process() throws NegativeAmountException, ExceedsAvailableBalanceException, ExceedsFraudSuspicionLimitException {
+
+    }
 }

@@ -30,16 +30,24 @@ public abstract class BankAccount {
         this.accountOpenedOn = accountOpenedOn;
     }
 
-    long getAccountNumber() {
+    long getAccountNumber()
+    {
         return this.accountNumber;
     }
 
-    double getBalance() {
+    double getBalance()
+    {
         return balance;
     }
 
-    double getInterestRate() {
+    double getInterestRate()
+    {
         return interestRate;
+    }
+
+    public double futureValue(int years)
+    {
+        return (balance * (Math.pow((1 + interestRate), years)));
     }
 
     public static double recursiveFutureValue(double amount, int term, double interestRate)
@@ -55,7 +63,8 @@ public abstract class BankAccount {
         return accountOpenedOn;
     }
 
-    boolean withdraw(double amount) {
+    boolean withdraw(double amount)
+    {
         if (amount > 0 && amount <= getBalance()) {
             this.balance -= amount;
             return true;
@@ -63,7 +72,8 @@ public abstract class BankAccount {
         return false;
     }
 
-    boolean deposit(double amount) {
+    boolean deposit(double amount)
+    {
         if (amount > 0) {
             this.balance += amount;
             return true;

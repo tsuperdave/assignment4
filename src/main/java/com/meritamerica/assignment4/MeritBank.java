@@ -201,14 +201,11 @@ public class MeritBank
                 int numInFraudQueue = sc.nextInt();
                 for (int j = 0; j < numInFraudQueue; j++)
                 {
-                    /* "2,4,5000,01/05/2020" */
-                    fraudQueue.addTransaction(new Transaction(sc.next));
-                    // TODO --- done?
+                    Transaction newFraudTxn = Transaction.readFromString(sc.next());
+                    fraudQueue.addTransaction(newFraudTxn);
+                   // will need to add txn to fraud queue
+
                 }
-                System.out.println(fraudQueue);
-
-
-
             }
             listOfAccountHolders = newAcctHolderList;
 
@@ -216,8 +213,9 @@ public class MeritBank
             Sorts account holders by current total bal,
             prints to console
              */
+
             sortAccountHolders();
-`
+
         }catch(Exception e)
         {
             e.printStackTrace();

@@ -13,4 +13,8 @@ public class WithdrawTransaction extends Transaction
         this.txnDate = new Date();
     }
 
+    @Override
+    public void process() throws NegativeAmountException, ExceedsAvailableBalanceException, ExceedsFraudSuspicionLimitException {
+
+    }
 }
