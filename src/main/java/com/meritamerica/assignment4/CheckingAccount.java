@@ -5,9 +5,11 @@ import java.util.*;
 
 public class CheckingAccount extends BankAccount
 {
+    private static final double INTEREST_RATE = 0.0001;
+
     CheckingAccount(double openingBalance)
     {
-        super(openingBalance, 0.0001, new java.util.Date());
+        super(openingBalance, INTEREST_RATE, new java.util.Date());
     }
 
     CheckingAccount(long accountNumber, double balance, double interestRate, java.util.Date accountOpenedOn)
@@ -15,27 +17,15 @@ public class CheckingAccount extends BankAccount
         super(accountNumber, balance, interestRate, accountOpenedOn);
     }
 
-    static CheckingAccount readFromString(String accountData) throws ParseException
+    static CheckingAccount readFromString(String accountData) throws ParseException, NumberFormatException
     {
         String[] tempArr = accountData.split(",");
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-        long tempAcctNum = 0;
-        double tempBal = 0, tempIntRate = 0;
-        Date tempOpenDate = null;
+        long tempAcctNum = Long.parseLong(tempArr[0]);
+        double tempBal = Double.parseDouble(tempArr[1]), tempIntRate = Double.parseDouble(tempArr[2]);
+        Date tempOpenDate = dateFormat.parse((tempArr[3]));
 
-        if(accountData.length() > 0)
-        {
-            tempAcctNum = Long.parseLong(tempArr[0]);
-            tempBal = Double.parseDouble(tempArr[1]);
-            tempIntRate = Double.parseDouble(tempArr[2]);
-            tempOpenDate = dateFormat.parse((tempArr[3]));
-        }
-        else
-        {
-            System.err.println("Checking account data format incorrect");
-            throw new NumberFormatException();
-        }
         return new CheckingAccount(tempAcctNum, tempBal, tempIntRate, tempOpenDate);
     }
 }

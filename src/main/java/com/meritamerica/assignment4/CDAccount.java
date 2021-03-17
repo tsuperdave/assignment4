@@ -1,7 +1,7 @@
 package com.meritamerica.assignment4;
 
 import java.text.*;
-import java.util.Date;
+import java.util.*;
 
 // add Override for withdraw/deposit so if term < startDate, return false
 
@@ -9,17 +9,21 @@ public class CDAccount extends BankAccount
 {
 
     protected CDOffering cdOffering;
+    private Date accountOpenedOn;
+    private int term;
 
     CDAccount(CDOffering offering, double balance)
     {
-        super(balance, offering.getInterestRate(), new java.util.Date());
+        super(balance, offering.getInterestRate());
         this.cdOffering = offering;
+        this.accountOpenedOn = new Date();
     }
 
-    CDAccount(long accountNumber, double balance, double interestRate, int term, Date accountOpenedOn)
+    CDAccount(long accountNumber, double balance, double interestRate, Date accountOpenedOn, int term)
     {
         super(accountNumber, balance, interestRate, accountOpenedOn);
-        this.cdOffering = new CDOffering(term, interestRate);
+        this.term = term;
+        this.accountOpenedOn = accountOpenedOn;
     }
 
     int getTerm()
@@ -29,41 +33,30 @@ public class CDAccount extends BankAccount
 
     public double futureValue()
     {
-        // TODO --- add new code
-        return BankAccount.recursiveFutureValue();
+        // TODO --- done
+        return MeritBank.recursiveFutureValue(super.getBalance(), cdOffering.getTerm(), cdOffering.getInterestRate());
     }
 
-    static CDAccount readFromString(String accountData) throws ParseException
+    static CDAccount readFromString(String accountData) throws ParseException, NumberFormatException
     {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        long tempAcctNum = 0;
-        double tempBal = 0, tempIntRate = 0;
-        int tempTerm = 0;
-        Date tempOpenDate = null;
         String[] tempArr = accountData.split(",");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-        if(accountData.length() > 0)
-        {
-            tempAcctNum = Long.parseLong(tempArr[0]);
-            tempBal = Double.parseDouble(tempArr[1]);
-            tempIntRate = Double.parseDouble(tempArr[2]);
-            tempOpenDate = dateFormat.parse(tempArr[3]);
-            tempTerm = Integer.parseInt(tempArr[4]);
-        }
-        else
-        {
-            throw new NumberFormatException();
-        }
+        long tempAcctNum = Long.parseLong(tempArr[0]);
+        double tempBal = Double.parseDouble(tempArr[1]), tempIntRate = Double.parseDouble(tempArr[2]);
+        Date tempOpenDate = dateFormat.parse(tempArr[3]);
+        int tempTerm = Integer.parseInt(tempArr[4]);
+
         return new CDAccount(tempAcctNum, tempBal, tempIntRate, tempOpenDate, tempTerm);
     }
 
     String writeToString()
     {
-        String tempAcctNum = String.valueOf(super.getAccountNumber()),
+        String tempAcctNum = String.valueOf(this.getAccountNumber()),
                 tempBal = String.valueOf(this.balance),
-                tempIntRate = String.valueOf(getInterestRate()),
-                tempOpenDate = String.valueOf(this.startDate),
-                tempTerm = String.valueOf(this.getTerm());
+                tempIntRate = String.valueOf(this.getInterestRate()),
+                tempOpenDate = String.valueOf(this.accountOpenedOn),
+                tempTerm = String.valueOf(this.term);
 
         return tempAcctNum + "," +
                 tempBal + "," +
