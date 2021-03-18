@@ -9,22 +9,22 @@ import org.omg.CORBA.PUBLIC_MEMBER;
 
 public class MeritBank
 {
-    private static CDOffering[] listOfCDOffers;
-    private static AccountHolder[] listOfAccountHolders;
+    private static CDOffering[] listOfCDOffers = new CDOffering[0];
+    private static AccountHolder[] listOfAccountHolders = new AccountHolder[0];
     static FraudQueue fraudQueue = new FraudQueue();
     private static long nextAccountNumber = 1L;
-    static long accountNumber;
+    static int accountHolderCount = 0;
 
     static void addAccountHolder(AccountHolder accountHolder)
     {
+        AccountHolder[] tempArr = new AccountHolder[listOfAccountHolders.length +1];
         for(int i = 0; i < listOfAccountHolders.length; i++)
         {
-            if(listOfAccountHolders[i] == null)
-            {
-                listOfAccountHolders[i] = accountHolder;
-                break;
-            }
+            tempArr[i] = listOfAccountHolders[i];
         }
+        tempArr[accountHolderCount] = accountHolder;
+        listOfAccountHolders = tempArr;
+        accountHolderCount++;
     }
 
     static AccountHolder[] getAccountHolders()
@@ -97,60 +97,50 @@ public class MeritBank
         double total = 0;
         for(AccountHolder ah: listOfAccountHolders)
         {
-            if(ah != null)
-            {
-                total += ah.getCombinedBalance();
-            }
+            total += ah.getCombinedBalance();
         }
         return total;
     }
 
     static boolean readFromFile(String fileName)
     {
-        // TODO --- debug
-        // debug FraudQueue txn adding
         try(Scanner sc = new Scanner(new FileReader(fileName)))
         {
+            setNextAccountNumber(0); // need to reset acct num and base off file
             setNextAccountNumber(Long.parseLong(sc.next()));
+            System.out.println(nextAccountNumber);
 
-            /*
-             Get # of CD Offers,
-             create new arr to length,
-             iterate over index of arr,
-             add CD offer into to arr after parsing data
-             */
+            // --- CD OFFERS --- //
             CDOffering[] newCDarr = new CDOffering[sc.nextInt()];
+            System.out.println(newCDarr.length);
+
             for(int i = 0; i < newCDarr.length; i++)
             {
                 newCDarr[i] = CDOffering.readFromString(sc.next());
             }
             setCDOfferings(newCDarr);
 
-            /*
-            Create new AcctHolder list arr,
-            set length to data pulled from txt file,
-            iterate, adding new info on each iteration
-             */
+            // --- ACCOUNT HOLDER --- //
             AccountHolder[] newAcctHolderList = new AccountHolder[Integer.parseInt(sc.next())];
+            System.out.println(newAcctHolderList.length);
+
             for(int i = 0; i < newAcctHolderList.length; i++)
             {
-                /*
-                get AH1 name, ssn, then # of chk accts,
-                create tempAcctHolder var to store info,
-                add this iteration to act holder arr
-                 */
                 AccountHolder tempAcct = AccountHolder.readFromString(sc.next());
+                newAcctHolderList[i] = tempAcct;
+
+                // --- CHECK ACCT + TXNs --- //
                 int numOfCheckAccts = sc.nextInt();
-                /*
-                Iterate per num of chk accts,
-                parse acct num, bal,int rate, date
-                 */
+                System.out.println(numOfCheckAccts);
+
                 for(int j = 0; j < numOfCheckAccts; j++)
                 {
                     CheckingAccount newChk = CheckingAccount.readFromString(sc.next());
                     tempAcct.addCheckingAccount(newChk);
 
                     int numOfTxns = sc.nextInt();
+                    System.out.println(numOfTxns);
+
                     for(int k = 0; k < numOfTxns; k++)
                     {
                         Transaction newTxns = Transaction.readFromString(sc.next());
@@ -158,17 +148,18 @@ public class MeritBank
                     }
                 }
 
-                /*
-                Iterate per num of sav accts,
-                parse acct num, bal,int rate, date
-                 */
+                // --- SAVINGS ACCT + TXNs --- //
                 int numOfSavAccts = sc.nextInt();
+                System.out.println(numOfSavAccts);
+
                 for(int j = 0; j < numOfSavAccts; j++)
                 {
                     SavingsAccount newSav = SavingsAccount.readFromString(sc.next());
                     tempAcct.addSavingsAccount(newSav);
 
                     int numOfTxns = sc.nextInt();
+                    System.out.println(numOfTxns);
+
                     for(int k = 0; k < numOfTxns; k++)
                     {
                         Transaction newTxns = Transaction.readFromString(sc.next());
@@ -176,17 +167,18 @@ public class MeritBank
                     }
                 }
 
-                /*
-                Iterate per num of cd accts,
-                parse acct num, bal,int rate, date
-                 */
+                // --- CD ACCT + TXNs ---//
                 int numOfCDAccts = sc.nextInt();
+                System.out.println(numOfCDAccts);
+
                 for(int j = 0; j < numOfCDAccts; j++)
                 {
                     CDAccount newCD = CDAccount.readFromString(sc.next());
                     tempAcct.addCDAccount(newCD);
 
                     int numOfTxns = sc.nextInt();
+                    System.out.println(numOfTxns);
+
                     for(int k = 0; k < numOfTxns; k++)
                     {
                         Transaction newTxns = Transaction.readFromString(sc.next());
@@ -194,19 +186,18 @@ public class MeritBank
                     }
                 }
 
-                /*
-                Iterate per num of txn for fraud queue,
-                parse source, target, amt, date
-                 */
-                int numInFraudQueue = sc.nextInt();
-                for (int j = 0; j < numInFraudQueue; j++)
-                {
-                    Transaction newFraudTxn = Transaction.readFromString(sc.next());
-                    fraudQueue.addTransaction(newFraudTxn);
-                   // will need to add txn to fraud queue
-
-                }
             }
+            // --- FRAUD TXNs ---//
+            int numInFraudQueue = sc.nextInt();
+            System.out.println(numInFraudQueue);
+
+            for (int j = 0; j < numInFraudQueue; j++)
+            {
+                Transaction newFraudTxn = Transaction.readFromString(sc.next());
+                fraudQueue.addTransaction(newFraudTxn);
+            }
+            // sortAccountHolders();
+
             listOfAccountHolders = newAcctHolderList;
 
             /*
@@ -214,7 +205,7 @@ public class MeritBank
             prints to console
              */
 
-            sortAccountHolders();
+
 
         }catch(Exception e)
         {
@@ -226,20 +217,18 @@ public class MeritBank
 
     static boolean writeToFile(String fileName)
     {
-        // TODO --- debug
-        // Should also read BankAccount transactions and the FraudQueue
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(fileName)))
         {
-            bw.write(String.valueOf(nextAccountNumber)); bw.newLine();						// next acct num
+            bw.write(String.valueOf(nextAccountNumber)); bw.newLine();
 
-            bw.write(String.valueOf(listOfCDOffers.length)); bw.newLine();					// num of CD Offers
+            bw.write(String.valueOf(listOfCDOffers.length)); bw.newLine();
             for(int i = 0; i < listOfCDOffers.length; i++)
             {
-                bw.write(listOfCDOffers[i].writeToString()); bw.newLine();				    // list CD offers
+                bw.write(listOfCDOffers[i].writeToString()); bw.newLine();
             }
 
-            bw.write(String.valueOf(listOfAccountHolders.length)); bw.newLine();			// num of account holders
-            sortAccountHolders();															// sort account holders then iterate over new array, write offers out
+            bw.write(String.valueOf(listOfAccountHolders.length)); bw.newLine();
+            sortAccountHolders();
             for(int i = 0; i < listOfAccountHolders.length; i++)
             {
                 bw.write(listOfAccountHolders[i].writeToString()); bw.newLine();
@@ -275,27 +264,24 @@ public class MeritBank
         MeritBank.nextAccountNumber = nextAccountNumber;
     }
 
+    static double futureValue(double presentValue, double interestRate, int term)
+    {
+        return recursiveFutureValue(presentValue,term,interestRate);
+    }
+
     public static double recursiveFutureValue(double amount, double years, double interestRate)
     {
         double futureVal = amount + (amount * years);
         if(years <= 1 || amount <= 0 || interestRate <= 0) return futureVal;
         return recursiveFutureValue(futureVal, --years, interestRate);
-        // TODO --- done
     }
 
     public static boolean processTransaction(Transaction transaction) throws NegativeAmountException, ExceedsAvailableBalanceException, ExceedsFraudSuspicionLimitException
     {
-        // TODO --- done?
-    	/*
-        If transaction does not violate any constraints, deposit/withdraw values from the relevant BankAccounts and add the transaction to the relevant BankAccounts
-        If the transaction violates any of the basic constraints (negative amount, exceeds available balance) the relevant exception should be thrown and the processing should terminate i.e. false
-        If the transaction violates the $1,000 suspicion limit, it should simply be added to the FraudQueue for future processing
-        Need to process Source/Target
-        Will need to setup instances of withdraw, deposit and transfer
-         */
         BankAccount sourceAcct = transaction.getSourceAccount();
         BankAccount targetAcct = transaction.getTargetAccount();
-        if (sourceAcct != null) {
+
+        if (sourceAcct == null) {
             /*
             Processing instances of a Withdrawal
              */
@@ -303,50 +289,48 @@ public class MeritBank
                 if (transaction.getAmount() < 0) {
                     throw new NegativeAmountException("Unable to process request. Transaction amount must be greater than $0");
                 }
-                if (transaction.getAmount() < -1000) {
-                    fraudQueue.addTransaction(transaction);
-                    throw new ExceedsFraudSuspicionLimitException("Possible fraud detected. Transaction is being sent to fraud detection services for review");
-                }
                 if (targetAcct.getBalance() + transaction.getAmount() < 0) {
                     throw new ExceedsAvailableBalanceException("Insufficient Funds");
                 }
-                return true;
-            }
-        /*
-        Processing instances of a Deposit
-         */
-            if (transaction instanceof DepositTransaction) {
-                if (transaction.getAmount() < 0) {
-                    throw new NegativeAmountException("Unable to process request. Transaction amount must be greater than $0");
-                }
-                if (transaction.getAmount() > 1000) {
+                if (transaction.getAmount() <= -1000) {
                     fraudQueue.addTransaction(transaction);
                     throw new ExceedsFraudSuspicionLimitException("Possible fraud detected. Transaction is being sent to fraud detection services for review");
                 }
                 return true;
             }
-        /*
-        Processing instances of a Transfer
-         */
-            if (transaction instanceof TransferTransaction)
+                /*
+                Processing instances of a Deposit
+                */
+            if (transaction.getAmount() < 0) {
+                throw new NegativeAmountException("Unable to process request. Transaction amount must be greater than $0");
+            }
+            if (transaction.getAmount() >= 1000) {
+                fraudQueue.addTransaction(transaction);
+                throw new ExceedsFraudSuspicionLimitException("Possible fraud detected. Transaction is being sent to fraud detection services for review");
+            }
+            return true;
+        }
+
+            /*
+            Processing instances of a Transfer
+             */
+            if (sourceAcct.getBalance() < transaction.getAmount())
             {
-                if (sourceAcct.getBalance() < transaction.getAmount())
-                {
-                    throw new ExceedsAvailableBalanceException("Insufficient Funds");
-                }
-                if (transaction.getAmount() < 0) {
-                    throw new NegativeAmountException("Unable to process request. Transaction amount must be greater than $0");
-                }
-                if (transaction.getAmount() > 1000) {
-                    throw new ExceedsFraudSuspicionLimitException("Possible fraud detected. Transaction is being sent to fraud detection services for review");
-                }
-            }else
+                throw new ExceedsAvailableBalanceException("Insufficient Funds");
+            }
+            if (transaction.getAmount() < 0) {
+                throw new NegativeAmountException("Unable to process request. Transaction amount must be greater than $0");
+            }
+            if (transaction.getAmount() > 1000)
+            {
+                fraudQueue.addTransaction(transaction);
+                throw new ExceedsFraudSuspicionLimitException("Possible fraud detected. Transaction is being sent to fraud detection services for review");
+            }
+            else
             {
                 sourceAcct.withdraw(transaction.amount);
                 targetAcct.deposit(transaction.amount);
             }
-            return true;
-        }
         return true;
     }
     
@@ -356,7 +340,6 @@ public class MeritBank
     }
     
     public static BankAccount getBankAccount(long accountId) {
-        // TODO --- done?
         for (AccountHolder ah: listOfAccountHolders)
         {
             // iterate over checking and match ID to current iteration in any one of the iterations

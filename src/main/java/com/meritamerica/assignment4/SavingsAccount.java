@@ -20,6 +20,8 @@ public class SavingsAccount extends BankAccount
 
     static SavingsAccount readFromString(String accountData) throws ParseException, NumberFormatException
     {
+        System.out.println(accountData);
+
         String[] tempArr = accountData.split(",");
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 

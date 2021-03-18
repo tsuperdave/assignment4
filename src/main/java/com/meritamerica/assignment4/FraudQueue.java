@@ -5,10 +5,6 @@ import java.util.List;
 
 public class FraudQueue
 {
-    // TODO --- done
-    /*
-    Need a place to store transactions in queue and pull from
-     */
     private List<Transaction> listOfTransactions = new ArrayList<Transaction>();
 
     FraudQueue(){}

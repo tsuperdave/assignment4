@@ -6,7 +6,7 @@ import java.util.*;
 public abstract class BankAccount {
 
 
-    private List<Transaction> listOfTransactions;
+    private List<Transaction> listOfTransactions = new ArrayList<Transaction>();
     java.util.Date accountOpenedOn;
     protected long accountNumber;
     protected double balance;
@@ -52,7 +52,6 @@ public abstract class BankAccount {
 
     public static double recursiveFutureValue(double amount, int term, double interestRate)
     {
-        // TODO --- done
         double futureVal = amount + (amount * term);
         if(term <= 1 || amount <= 0 || interestRate <= 0) return futureVal;
         return recursiveFutureValue(futureVal, --term, interestRate);
@@ -65,7 +64,7 @@ public abstract class BankAccount {
 
     boolean withdraw(double amount)
     {
-        if (amount > 0 && amount <= getBalance()) {
+        if ((amount > 0) && (amount <= balance)) {
             this.balance -= amount;
             return true;
         }
@@ -83,25 +82,11 @@ public abstract class BankAccount {
 
     public void addTransaction(Transaction transaction)
     {
-        listOfTransactions.add(transaction);
+        this.listOfTransactions.add(transaction);
     }
 
     public List<Transaction> getTransactions()
     {
-        // TODO --- done?
-        for(Transaction txn: listOfTransactions)
-        {
-            System.out.println(txn);
-            listOfTransactions.add(txn);
-        }
-        /*
-        Iterator<Transaction> txnIt = listOfTransactions.iterator();
-        while(txnIt.hasNext())
-        {
-            System.out.println(txn);
-            listOfTransactions.add(txn);
-        }
-        */
         return listOfTransactions;
     }
 

@@ -5,7 +5,6 @@ import java.util.Date;
 
 public abstract class Transaction
 {
-    // TODO --- new class
     BankAccount sourceAcct;
     BankAccount targetAcct;
     Date txnDate;
@@ -13,20 +12,14 @@ public abstract class Transaction
     String rejectReason;
     boolean isProcessed;
 
-    public BankAccount getSourceAccount()
-    {
-        // TODO --- done
-        return sourceAcct;
-    }
-
     public void setSourceAccount(BankAccount sourceAccount)
     {
         this.sourceAcct = sourceAccount;
     }
 
-    public BankAccount getTargetAccount()
+    public BankAccount getSourceAccount()
     {
-        return targetAcct;
+        return sourceAcct;
     }
 
     public void setTargetAccount(BankAccount targetAccount)
@@ -34,10 +27,9 @@ public abstract class Transaction
         this.targetAcct = targetAccount;
     }
 
-    public double getAmount()
+    public BankAccount getTargetAccount()
     {
-        // TODO --- done
-        return amount;
+        return targetAcct;
     }
 
     public void setAmount(double amount)
@@ -45,10 +37,9 @@ public abstract class Transaction
         this.amount = amount;
     }
 
-    public Date getTransactionDate()
+    public double getAmount()
     {
-        // TODO --- done
-        return txnDate;
+        return amount;
     }
 
     public void setTransactionDate(Date date)
@@ -56,9 +47,14 @@ public abstract class Transaction
         this.txnDate = date;
     }
 
+    public Date getTransactionDate()
+    {
+        return txnDate;
+    }
+
     public static Transaction readFromString(String transactionDataString) throws ParseException
     {
-        // TODO --- done
+        System.out.println(transactionDataString);
         // -1,1,1000.0,01/01/2020  type, targetacctnum, amt, date
         String[] tempArr = transactionDataString.split(",");
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -84,20 +80,20 @@ public abstract class Transaction
         if(Integer.parseInt(tempArr[0]) == -1)
             if (Double.parseDouble(tempArr[2]) < 0)
             {
+                    // System.out.println(transactionDataString);
                     WithdrawTransaction txn = new WithdrawTransaction(targetAcct, tempAmt);
                     txn.setTransactionDate(tempOpenDate);
-                    System.out.println(txn.writeToString());
                     return txn;
             } else
             {
+                // System.out.println(transactionDataString);
                 DepositTransaction txn = new DepositTransaction(targetAcct, tempAmt);
                 txn.setTransactionDate(tempOpenDate);
-                System.out.println(txn.writeToString());
                 return txn;
             }
+            // System.out.println(transactionDataString);
             TransferTransaction txn = new TransferTransaction(source, targetAcct, tempAmt);
             txn.setTransactionDate(tempOpenDate);
-            System.out.println(txn.writeToString());
             return txn;
 
     }
@@ -125,11 +121,9 @@ public abstract class Transaction
     }
 
     public abstract void process() throws NegativeAmountException, ExceedsAvailableBalanceException, ExceedsFraudSuspicionLimitException;
-        // TODO --- done
 
     public boolean isProcessedByFraudTeam()
     {
-        // TODO --- done
         return this.isProcessed;
     }
 
@@ -140,7 +134,6 @@ public abstract class Transaction
 
     public String getRejectionReason()
     {
-        // TODO --- done
         return rejectReason;
     }
 

@@ -23,6 +23,8 @@ public class CDOffering
 
     static CDOffering readFromString(String cdOfferingDataString)
     {
+        System.out.println(cdOfferingDataString);
+
         int tempTerm = 0;
         double tempIntRate = 0;
         int comma = cdOfferingDataString.indexOf(",");

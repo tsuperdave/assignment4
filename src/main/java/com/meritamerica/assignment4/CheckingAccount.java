@@ -19,6 +19,7 @@ public class CheckingAccount extends BankAccount
 
     static CheckingAccount readFromString(String accountData) throws ParseException, NumberFormatException
     {
+        System.out.println(accountData);
         String[] tempArr = accountData.split(",");
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 

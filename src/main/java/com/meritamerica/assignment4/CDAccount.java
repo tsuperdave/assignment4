@@ -5,11 +5,11 @@ import java.util.*;
 
 // add Override for withdraw/deposit so if term < startDate, return false
 
-public class CDAccount extends BankAccount
-{
+public class CDAccount extends BankAccount {
 
     protected CDOffering cdOffering;
-    private Date accountOpenedOn;
+    private final Date accountOpenedOn;
+    private double balance;
     private int term;
 
     CDAccount(CDOffering offering, double balance)
@@ -26,19 +26,40 @@ public class CDAccount extends BankAccount
         this.accountOpenedOn = accountOpenedOn;
     }
 
+    double getBalance()
+    {
+        return super.getBalance();
+    }
+
+    double getInterestRate()
+    {
+        return super.interestRate;
+    }
+
+    long getAccountNumber()
+    {
+        return  super.accountNumber;
+    }
+
     int getTerm()
     {
-        return this.cdOffering.getTerm();
+        return term;
+    }
+
+    Date getStartDate()
+    {
+        return super.accountOpenedOn;
     }
 
     public double futureValue()
     {
-        // TODO --- done
         return MeritBank.recursiveFutureValue(super.getBalance(), cdOffering.getTerm(), cdOffering.getInterestRate());
     }
 
     static CDAccount readFromString(String accountData) throws ParseException, NumberFormatException
     {
+        System.out.println(accountData);
+
         String[] tempArr = accountData.split(",");
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -68,12 +89,30 @@ public class CDAccount extends BankAccount
     @Override
     boolean withdraw(double amount)
     {
+        Date date = new Date();
+        int years = accountOpenedOn.getYear() - date.getYear();
+        if (years > term) {
+            if (amount <= balance && amount > 0) {
+                balance -= amount;
+                return true;
+            }
+        }
         return false;
     }
 
     @Override
-    boolean deposit (double amount)
+    boolean deposit(double amount)
     {
+        Date date = new Date();
+        int years = accountOpenedOn.getYear() - date.getYear();
+        if(years > term)
+        {
+            if(amount > 0)
+            {
+                balance += amount;
+                return true;
+            }
+        }
         return false;
     }
 

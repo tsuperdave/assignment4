@@ -46,7 +46,7 @@ public class AccountHolder implements Comparable<AccountHolder>
     /* CHECKING ACCOUNT */
     CheckingAccount addCheckingAccount(double openingBalance) throws ExceedsCombinedBalanceLimitException, ExceedsFraudSuspicionLimitException, NegativeAmountException
     {
-        // TODO -- add new code
+
         /*
         Need to modify exception class methods to accept a string to display
          */
@@ -78,7 +78,7 @@ public class AccountHolder implements Comparable<AccountHolder>
 
     CheckingAccount addCheckingAccount(CheckingAccount checkingAccount) throws ExceedsCombinedBalanceLimitException, ExceedsFraudSuspicionLimitException, NegativeAmountException
     {
-        // TODO --- add new code
+
         /*
         If combined balance limit is exceeded, throw ExceedsCombinedBalanceLimitException
         Should also add a deposit transaction with the opening balance
@@ -143,7 +143,7 @@ public class AccountHolder implements Comparable<AccountHolder>
     /* SAVINGS ACCOUNT */
     SavingsAccount addSavingsAccount(double openingBalance) throws ExceedsCombinedBalanceLimitException, ExceedsFraudSuspicionLimitException, NegativeAmountException
     {
-        // TODO -- add new code
+
         /*
         Need to modify exception class methods to accept a string to display
          */
@@ -175,7 +175,7 @@ public class AccountHolder implements Comparable<AccountHolder>
 
     SavingsAccount addSavingsAccount(SavingsAccount savingsAccount) throws ExceedsCombinedBalanceLimitException, ExceedsFraudSuspicionLimitException, NegativeAmountException
     {
-        // TODO --- add new code
+
         /*
         If combined balance limit is exceeded, throw ExceedsCombinedBalanceLimitException
         Should also add a deposit transaction with the opening balance
@@ -240,8 +240,6 @@ public class AccountHolder implements Comparable<AccountHolder>
     /* CD ACCOUNT */
     CDAccount addCDAccount(CDOffering offering, double openingBalance) throws ExceedsFraudSuspicionLimitException, NegativeAmountException
     {
-        // TODO --- add new code
-        // Should also add a deposit transaction with the opening balance
         if(MeritBank.getCDOfferings() == null) return null;
 
         CDAccount newCDAccount = new CDAccount(offering, openingBalance);
@@ -271,6 +269,7 @@ public class AccountHolder implements Comparable<AccountHolder>
         {
             return null;
         }
+
         for(int i = 0; i < cdAccountList.length; i++)
         {
             if(cdAccountList[i] == null)
@@ -316,6 +315,8 @@ public class AccountHolder implements Comparable<AccountHolder>
 
     static AccountHolder readFromString(String accountHolderData) throws Exception
     {
+        System.out.println(accountHolderData);
+
         String[] tempArr = accountHolderData.split(",");
         String tempFirstName = "", tempMidName = "", TempLastName = "", tempSSN = "";
 
