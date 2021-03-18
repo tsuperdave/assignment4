@@ -360,25 +360,25 @@ public class MeritBank
         for (AccountHolder ah: listOfAccountHolders)
         {
             // iterate over checking and match ID to current iteration in any one of the iterations
-            for(int i = 0; i < listOfAccountHolders.length; i++)
+            for(int i = 0; i < ah.getCheckingAccounts().length; i++)
             {
-                if (accountId == ah.getCheckingAccounts()[i].accountNumber)
+                if (accountId == ah.getCheckingAccounts()[i].getAccountNumber())
                 {
                     return ah.getCheckingAccounts()[i];
                 }
             }
             // iterate over savings and match ID to current iteration in any one of the iterations
-            for(int i = 0; i < listOfAccountHolders.length; i++)
+            for(int i = 0; i < ah.getSavingsAccounts().length; i++)
             {
-                if (accountId == ah.getSavingsAccounts()[i].accountNumber)
+                if (accountId == ah.getSavingsAccounts()[i].getAccountNumber())
                 {
                     return ah.getSavingsAccounts()[i];
                 }
             }
             // iterate over CD accts and match ID to current iteration in any one of the iterations
-            for(int i = 0; i < listOfAccountHolders.length; i++)
+            for(int i = 0; i < ah.getCDAccounts().length; i++)
             {
-                if (accountId == ah.getCDAccounts()[i].accountNumber)
+                if (accountId == ah.getCDAccounts()[i].getAccountNumber())
                 {
                     return ah.getCDAccounts()[i];
                 }

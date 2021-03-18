@@ -63,32 +63,42 @@ public abstract class Transaction
         String[] tempArr = transactionDataString.split(",");
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-        int tempTypeOfTxn = Integer.parseInt(tempArr[0]);
-        long tempTargetAcctNum = Long.parseLong(tempArr[1]);
+        // long tempTypeOfTxn = Long.parseLong(tempArr[0]);
+        // long tempTargetAcctNum = Long.parseLong(tempArr[1]);
         double tempAmt = Double.parseDouble(tempArr[2]);
         Date tempOpenDate = dateFormat.parse(tempArr[3]);
 
         /*
         -1 indicates deposits/withdrawals, 1 or 2 indicate transfers
          */
-        BankAccount source =  MeritBank.getBankAccount(tempTypeOfTxn);
-        BankAccount targetAcct = MeritBank.getBankAccount(tempTargetAcctNum);
+        BankAccount source;
+        if(tempArr[0].equals("-1"))
+        {
+            source = null;
+        }else{
+            source =  MeritBank.getBankAccount(Long.parseLong(tempArr[0]));
+        }
 
-        if (tempTypeOfTxn == -1 && tempAmt < 0) {
-                WithdrawTransaction txn = new WithdrawTransaction(targetAcct, tempAmt);
+        BankAccount targetAcct = MeritBank.getBankAccount(Long.parseLong(tempArr[1]));
+
+        if(Integer.parseInt(tempArr[0]) == -1)
+            if (Double.parseDouble(tempArr[2]) < 0)
+            {
+                    WithdrawTransaction txn = new WithdrawTransaction(targetAcct, tempAmt);
+                    txn.setTransactionDate(tempOpenDate);
+                    System.out.println(txn.writeToString());
+                    return txn;
+            } else
+            {
+                DepositTransaction txn = new DepositTransaction(targetAcct, tempAmt);
                 txn.setTransactionDate(tempOpenDate);
                 System.out.println(txn.writeToString());
                 return txn;
-        } else if(tempTypeOfTxn == -1 && tempAmt > 0){
-            DepositTransaction txn = new DepositTransaction(targetAcct, tempAmt);
+            }
+            TransferTransaction txn = new TransferTransaction(source, targetAcct, tempAmt);
             txn.setTransactionDate(tempOpenDate);
             System.out.println(txn.writeToString());
             return txn;
-        }
-        TransferTransaction txn = new TransferTransaction(source, targetAcct, tempAmt);
-        txn.setTransactionDate(tempOpenDate);
-        System.out.println(txn.writeToString());
-        return txn;
 
     }
 
