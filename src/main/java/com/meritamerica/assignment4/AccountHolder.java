@@ -10,9 +10,16 @@ public class AccountHolder implements Comparable<AccountHolder>
     private String middleName;
     private String lastName;
     private String ssn;
-    private CheckingAccount[] checkingAccountList = new CheckingAccount[10];
-    private SavingsAccount[] savingsAccountList = new SavingsAccount[10];
-    private CDAccount[] cdAccountList = new CDAccount[10];
+    private CheckingAccount[] checkingAccountList = new CheckingAccount[0];
+    private SavingsAccount[] savingsAccountList = new SavingsAccount[0];
+    private CDAccount[] cdAccountList = new CDAccount[0];
+    private int numOfChkAccts;
+    private int numofSavAccts;
+    private int numbOfCDAccts;
+    private double checkingBal;
+    private double savingsBal;
+    private double cdBal;
+    private double combinedBal;
 
     AccountHolder(){}
 
@@ -27,6 +34,13 @@ public class AccountHolder implements Comparable<AccountHolder>
         this.middleName = middleName;
         this.lastName = lastName;
         this.ssn = ssn;
+        this.numOfChkAccts = 0;
+        this.numofSavAccts = 0;
+        this.numbOfCDAccts = 0;
+        this.checkingBal = 0;
+        this.savingsBal = 0;
+        this.cdBal = 0;
+        this.combinedBal = 0;
     }
 
     String getFirstName(){ return firstName; }
@@ -54,6 +68,7 @@ public class AccountHolder implements Comparable<AccountHolder>
         {
             throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit. Unable to open new account at this time");
         }
+
         CheckingAccount newCheckingAccount = new CheckingAccount(openingBalance);
         DepositTransaction transaction = new DepositTransaction(newCheckingAccount, openingBalance);
 
@@ -73,38 +88,49 @@ public class AccountHolder implements Comparable<AccountHolder>
         {
             e.printStackTrace();
         }
+
+
+        CheckingAccount[] tempArr = new CheckingAccount[this.checkingAccountList.length + 1];
+        for(int i = 0; i<this.checkingAccountList.length; i++)
+        {
+            tempArr[i] = this.checkingAccountList[i];
+        }
+        tempArr[tempArr.length - 1] = newCheckingAccount;
+        this.checkingAccountList = tempArr;
+
         return newCheckingAccount;
     }
 
     CheckingAccount addCheckingAccount(CheckingAccount checkingAccount) throws ExceedsCombinedBalanceLimitException, ExceedsFraudSuspicionLimitException, NegativeAmountException
     {
 
-        /*
-        If combined balance limit is exceeded, throw ExceedsCombinedBalanceLimitException
-        Should also add a deposit transaction with the opening balance
-         */
-        if ((getCheckingBalance() + (getCombinedBalance() - getCDBalance()) >= BALANCE_LIMIT))
-        {
+        if ((getCheckingBalance() + (getCombinedBalance() - getCDBalance()) >= BALANCE_LIMIT)) {
             throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit. Unable to open new account at this time");
         }
 
-        DepositTransaction transaction = new DepositTransaction(checkingAccount, getCheckingBalance());
+        DepositTransaction transaction = new DepositTransaction(checkingAccount, checkingAccount.getBalance());
 
         try {
             MeritBank.processTransaction(transaction);
         }
-        catch (ExceedsFraudSuspicionLimitException e)
-        {
+        catch (ExceedsFraudSuspicionLimitException e) {
             throw new ExceedsFraudSuspicionLimitException("Possible fraud detected. Transaction is being sent to fraud detection services for review");
         }
-        catch (NegativeAmountException e)
-        {
+        catch (NegativeAmountException e) {
             throw new NegativeAmountException("Unable to process request. Transaction amount must be greater than $0");
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             e.printStackTrace();
         }
+
+        CheckingAccount[] tempArr = new CheckingAccount[this.checkingAccountList.length + 1];
+        for(int i = 0; i<this.checkingAccountList.length; i++)
+        {
+            tempArr[i] = this.checkingAccountList[i];
+        }
+        tempArr[tempArr.length - 1] = checkingAccount;
+        this.checkingAccountList = tempArr;
+
         return checkingAccount;
     }
 
@@ -129,13 +155,9 @@ public class AccountHolder implements Comparable<AccountHolder>
     double getCheckingBalance()
     {
         double sum = 0;
-        for(int i = 0; i < checkingAccountList.length + 1; i++)
+        for(CheckingAccount chkAcct: checkingAccountList)
         {
-            if(checkingAccountList[i] == null)
-            {
-                break;
-            }
-            sum += checkingAccountList[i].getBalance();
+            sum += chkAcct.getBalance();
         }
         return sum;
     }
@@ -170,6 +192,15 @@ public class AccountHolder implements Comparable<AccountHolder>
         {
             e.printStackTrace();
         }
+
+        SavingsAccount[] tempArr = new SavingsAccount[this.savingsAccountList.length + 1];
+        for(int i = 0; i<this.savingsAccountList.length; i++)
+        {
+            tempArr[i] = this.savingsAccountList[i];
+        }
+        tempArr[tempArr.length - 1] = newSavingsAccount;
+        this.savingsAccountList = tempArr;
+
         return newSavingsAccount;
     }
 
@@ -202,7 +233,17 @@ public class AccountHolder implements Comparable<AccountHolder>
         {
             e.printStackTrace();
         }
+
+        SavingsAccount[] tempArr = new SavingsAccount[this.savingsAccountList.length + 1];
+        for(int i = 0; i<this.savingsAccountList.length; i++)
+        {
+            tempArr[i] = this.savingsAccountList[i];
+        }
+        tempArr[tempArr.length - 1] = savingsAccount;
+        this.savingsAccountList = tempArr;
+
         return savingsAccount;
+
     }
 
     SavingsAccount[] getSavingsAccounts()
@@ -226,13 +267,9 @@ public class AccountHolder implements Comparable<AccountHolder>
     double getSavingsBalance()
     {
         double sum = 0;
-        for(int i = 0; i < savingsAccountList.length + 1; i++)
+        for(SavingsAccount savAcct: savingsAccountList)
         {
-            if(savingsAccountList[i] == null)
-            {
-                break;
-            }
-            sum += savingsAccountList[i].getBalance();
+            sum += savAcct.getBalance();
         }
         return sum;
     }
@@ -240,7 +277,7 @@ public class AccountHolder implements Comparable<AccountHolder>
     /* CD ACCOUNT */
     CDAccount addCDAccount(CDOffering offering, double openingBalance) throws ExceedsFraudSuspicionLimitException, NegativeAmountException
     {
-        if(MeritBank.getCDOfferings() == null) return null;
+        if(offering == null) return null;
 
         CDAccount newCDAccount = new CDAccount(offering, openingBalance);
         DepositTransaction transaction = new DepositTransaction(newCDAccount, openingBalance);
@@ -260,24 +297,47 @@ public class AccountHolder implements Comparable<AccountHolder>
         {
             e.printStackTrace();
         }
+
+        CDAccount[] tempArr = new CDAccount[this.cdAccountList.length + 1];
+        for(int i = 0; i<this.cdAccountList.length; i++)
+        {
+            tempArr[i] = this.cdAccountList[i];
+        }
+        tempArr[tempArr.length - 1] = newCDAccount;
+        this.cdAccountList = tempArr;
+
         return newCDAccount;
     }
 
-    CDAccount addCDAccount(CDAccount cdAccount)
+    CDAccount addCDAccount(CDAccount cdAccount) throws ExceedsFraudSuspicionLimitException, NegativeAmountException
     {
-        if(cdAccountList == null)
+
+        DepositTransaction transaction = new DepositTransaction(cdAccount, cdAccount.getBalance());
+
+        try {
+            MeritBank.processTransaction(transaction);
+        }
+        catch (ExceedsFraudSuspicionLimitException e)
         {
-            return null;
+            throw new ExceedsFraudSuspicionLimitException("Possible fraud detected. Transaction is being sent to fraud detection services for review");
+        }
+        catch (NegativeAmountException e)
+        {
+            throw new NegativeAmountException("Unable to process request. Transaction amount must be greater than $0");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
         }
 
-        for(int i = 0; i < cdAccountList.length; i++)
+        CDAccount[] tempArr = new CDAccount[this.cdAccountList.length + 1];
+        for(int i = 0; i < this.cdAccountList.length; i++)
         {
-            if(cdAccountList[i] == null)
-            {
-                cdAccountList[i] = cdAccount;
-                break;
-            }
+            tempArr[i] = this.cdAccountList[i];
         }
+        tempArr[tempArr.length - 1] = cdAccount;
+        this.cdAccountList = tempArr;
+
         return cdAccount;
     }
 
@@ -302,13 +362,9 @@ public class AccountHolder implements Comparable<AccountHolder>
     double getCDBalance()
     {
         double sum = 0;
-        for(int i = 0; i < cdAccountList.length + 1; i++)
+        for(CDAccount cdAcct: cdAccountList)
         {
-            if(cdAccountList[i] == null)
-            {
-                break;
-            }
-            sum += cdAccountList[i].getBalance();
+            sum += cdAcct.getBalance();
         }
         return sum;
     }

@@ -12,7 +12,7 @@ public class CheckingAccount extends BankAccount
         super(openingBalance, INTEREST_RATE, new java.util.Date());
     }
 
-    CheckingAccount(long accountNumber, double balance, double interestRate, java.util.Date accountOpenedOn)
+    CheckingAccount(long accountNumber, double balance, double interestRate, Date accountOpenedOn)
     {
         super(accountNumber, balance, interestRate, accountOpenedOn);
     }
@@ -20,6 +20,7 @@ public class CheckingAccount extends BankAccount
     static CheckingAccount readFromString(String accountData) throws ParseException, NumberFormatException
     {
         System.out.println(accountData);
+
         String[] tempArr = accountData.split(",");
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 

@@ -104,6 +104,8 @@ public class MeritBank
 
     static boolean readFromFile(String fileName)
     {
+        Set<String> transactions = new HashSet<String>();
+
         try(Scanner sc = new Scanner(new FileReader(fileName)))
         {
             setNextAccountNumber(0); // need to reset acct num and base off file
@@ -121,13 +123,14 @@ public class MeritBank
             setCDOfferings(newCDarr);
 
             // --- ACCOUNT HOLDER --- //
-            AccountHolder[] newAcctHolderList = new AccountHolder[Integer.parseInt(sc.next())];
-            System.out.println(newAcctHolderList.length);
+            // listOfAccountHolders = new AccountHolder[Integer.parseInt(sc.next())];
+            int numOfAHs = Integer.parseInt(sc.next());
+            System.out.println(numOfAHs);
 
-            for(int i = 0; i < newAcctHolderList.length; i++)
+            for(int i = 0; i < numOfAHs; i++)
             {
                 AccountHolder tempAcct = AccountHolder.readFromString(sc.next());
-                newAcctHolderList[i] = tempAcct;
+                addAccountHolder(tempAcct);
 
                 // --- CHECK ACCT + TXNs --- //
                 int numOfCheckAccts = sc.nextInt();
@@ -136,15 +139,14 @@ public class MeritBank
                 for(int j = 0; j < numOfCheckAccts; j++)
                 {
                     CheckingAccount newChk = CheckingAccount.readFromString(sc.next());
-                    tempAcct.addCheckingAccount(newChk);
+                    listOfAccountHolders[i].addCheckingAccount(newChk);
 
                     int numOfTxns = sc.nextInt();
                     System.out.println(numOfTxns);
 
                     for(int k = 0; k < numOfTxns; k++)
                     {
-                        Transaction newTxns = Transaction.readFromString(sc.next());
-                        newChk.addTransaction(newTxns);
+                        transactions.add(sc.next());
                     }
                 }
 
@@ -155,15 +157,15 @@ public class MeritBank
                 for(int j = 0; j < numOfSavAccts; j++)
                 {
                     SavingsAccount newSav = SavingsAccount.readFromString(sc.next());
-                    tempAcct.addSavingsAccount(newSav);
+                    listOfAccountHolders[i].addSavingsAccount(newSav);
 
                     int numOfTxns = sc.nextInt();
                     System.out.println(numOfTxns);
 
                     for(int k = 0; k < numOfTxns; k++)
                     {
-                        Transaction newTxns = Transaction.readFromString(sc.next());
-                        newSav.addTransaction(newTxns);
+                        // Transaction newTxns = Transaction.readFromString(sc.next());
+                        transactions.add(sc.next());
                     }
                 }
 
@@ -174,15 +176,15 @@ public class MeritBank
                 for(int j = 0; j < numOfCDAccts; j++)
                 {
                     CDAccount newCD = CDAccount.readFromString(sc.next());
-                    tempAcct.addCDAccount(newCD);
+                    listOfAccountHolders[i].addCDAccount(newCD);
 
                     int numOfTxns = sc.nextInt();
                     System.out.println(numOfTxns);
 
                     for(int k = 0; k < numOfTxns; k++)
                     {
-                        Transaction newTxns = Transaction.readFromString(sc.next());
-                        newCD.addTransaction(newTxns);
+                        // Transaction newTxns = Transaction.readFromString(sc.next());
+                        transactions.add(sc.next());
                     }
                 }
 
@@ -196,23 +198,29 @@ public class MeritBank
                 Transaction newFraudTxn = Transaction.readFromString(sc.next());
                 fraudQueue.addTransaction(newFraudTxn);
             }
-            // sortAccountHolders();
 
-            listOfAccountHolders = newAcctHolderList;
-
-            /*
-            Sorts account holders by current total bal,
-            prints to console
-             */
-
-
+            // System.out.println(transactions.size());
+            for(String txn: transactions)
+            {
+                Transaction newTxn = Transaction.readFromString(txn);
+                if(newTxn.getSourceAccount() == null)
+                {
+                    newTxn.getTargetAccount().addTransaction(newTxn);
+                }
+                else
+                {
+                    newTxn.getTargetAccount().addTransaction(newTxn);
+                    newTxn.getSourceAccount().addTransaction(newTxn);
+                }
+            }
+            return true;
 
         }catch(Exception e)
         {
             e.printStackTrace();
-            return true;
+            return false;
         }
-        return false;
+
     }
 
     static boolean writeToFile(String fileName)
@@ -292,7 +300,7 @@ public class MeritBank
                 if (targetAcct.getBalance() + transaction.getAmount() < 0) {
                     throw new ExceedsAvailableBalanceException("Insufficient Funds");
                 }
-                if (transaction.getAmount() <= -1000) {
+                if (transaction.getAmount() < -1000) {
                     fraudQueue.addTransaction(transaction);
                     throw new ExceedsFraudSuspicionLimitException("Possible fraud detected. Transaction is being sent to fraud detection services for review");
                 }
@@ -304,7 +312,7 @@ public class MeritBank
             if (transaction.getAmount() < 0) {
                 throw new NegativeAmountException("Unable to process request. Transaction amount must be greater than $0");
             }
-            if (transaction.getAmount() >= 1000) {
+            if (transaction.getAmount() > 1000) {
                 fraudQueue.addTransaction(transaction);
                 throw new ExceedsFraudSuspicionLimitException("Possible fraud detected. Transaction is being sent to fraud detection services for review");
             }
