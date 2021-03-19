@@ -23,36 +23,27 @@ public class CDAccount extends BankAccount {
         this.accountOpenedOn = accountOpenedOn;
     }
 
-    double getInterestRate()
-    {
+    double getInterestRate() {
         return super.interestRate;
     }
 
-    long getAccountNumber()
-    {
+    long getAccountNumber() {
         return super.accountNumber;
     }
 
-    int getTerm()
-    {
+    int getTerm() {
         return term;
     }
 
-    Date getStartDate()
-    {
+    Date getStartDate() {
         return super.accountOpenedOn;
     }
 
-    public double futureValue()
-    {
+    public double futureValue() {
         return MeritBank.recursiveFutureValue(super.getBalance(), cdOffering.getTerm(), cdOffering.getInterestRate());
     }
 
-    static CDAccount readFromString(String accountData) throws ParseException, NumberFormatException
-    {
-
-        System.out.println(accountData);
-
+    static CDAccount readFromString(String accountData) throws ParseException, NumberFormatException {
         String[] tempArr = accountData.split(",");
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -63,24 +54,13 @@ public class CDAccount extends BankAccount {
         return new CDAccount(tempAcctNum, tempBal, tempIntRate, tempOpenDate, tempTerm);
     }
 
-    String writeToString()
-    {
-        String tempAcctNum = String.valueOf(this.getAccountNumber()),
-                tempBal = String.valueOf(this.balance),
-                tempIntRate = String.valueOf(this.getInterestRate()),
-                tempOpenDate = String.valueOf(this.accountOpenedOn),
-                tempTerm = String.valueOf(this.term);
-
-        return tempAcctNum + "," +
-                tempBal + "," +
-                tempIntRate + "," +
-                tempOpenDate + "," +
-                tempTerm;
+    String writeToString() {
+        String[] newStr = new String[]{String.valueOf(this.getAccountNumber()), String.valueOf(this.balance), String.valueOf(this.getInterestRate()), String.valueOf(this.accountOpenedOn), String.valueOf(this.term)};
+        return String.join(",", newStr);
     }
 
     @Override
-    boolean withdraw(double amount)
-    {
+    boolean withdraw(double amount) {
         Date date = new Date();
         int years = accountOpenedOn.getYear() - date.getYear();
         if (years > term) {
@@ -93,8 +73,7 @@ public class CDAccount extends BankAccount {
     }
 
     @Override
-    boolean deposit(double amount)
-    {
+    boolean deposit(double amount) {
         Date date = new Date();
         int years = accountOpenedOn.getYear() - date.getYear();
         if(years > term)

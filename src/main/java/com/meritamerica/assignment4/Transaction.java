@@ -3,8 +3,7 @@ package com.meritamerica.assignment4;
 import java.text.*;
 import java.util.Date;
 
-public abstract class Transaction
-{
+public abstract class Transaction {
     final double FRAUD_THRESHOLD = 1000;
     protected BankAccount sourceAcct;
     protected BankAccount targetAcct;
@@ -46,8 +45,6 @@ public abstract class Transaction
     }
 
     public static Transaction readFromString(String transactionDataString) throws ParseException {
-        System.out.println(transactionDataString);
-
         String[] tempArr = transactionDataString.split(",");
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 

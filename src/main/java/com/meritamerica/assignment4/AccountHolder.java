@@ -67,7 +67,6 @@ public class AccountHolder implements Comparable<AccountHolder> {
 
     /* CHECKING ACCOUNT */
     CheckingAccount addCheckingAccount(double openingBalance) throws ExceedsCombinedBalanceLimitException, ExceedsFraudSuspicionLimitException, NegativeAmountException {
-
         return this.addCheckingAccount(new CheckingAccount(openingBalance));
     }
 
@@ -119,11 +118,6 @@ public class AccountHolder implements Comparable<AccountHolder> {
     }
 
     SavingsAccount addSavingsAccount(SavingsAccount savingsAccount) throws ExceedsCombinedBalanceLimitException, ExceedsFraudSuspicionLimitException, NegativeAmountException {
-
-        /*
-        If combined balance limit is exceeded, throw ExceedsCombinedBalanceLimitException
-        Should also add a deposit transaction with the opening balance
-         */
         if (this.getSavingsBalance() + (this.getCombinedBalance() - this.getCDBalance()) >= BALANCE_LIMIT) {
             throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit. Unable to open new account at this time");
         } else if(savingsAccount.getBalance() > FRAUD_THRESHOLD){
@@ -133,7 +127,7 @@ public class AccountHolder implements Comparable<AccountHolder> {
         savingsAccount.addTransaction(new DepositTransaction(savingsAccount, savingsAccount.getBalance()));
 
         SavingsAccount[] tempArr = new SavingsAccount[this.savingsAccountList.length + 1];
-        for(int i = 0; i<this.savingsAccountList.length; i++) {
+        for(int i = 0; i < this.savingsAccountList.length; i++) {
             tempArr[i] = this.savingsAccountList[i];
         }
         tempArr[tempArr.length - 1] = savingsAccount;
@@ -249,8 +243,6 @@ public class AccountHolder implements Comparable<AccountHolder> {
     }
 
     static AccountHolder readFromString(String accountHolderData) throws Exception {
-        System.out.println(accountHolderData);
-
         String[] tempArr = accountHolderData.split(",");
         String tempFirstName = "", tempMidName = "", TempLastName = "", tempSSN = "";
 
@@ -267,8 +259,8 @@ public class AccountHolder implements Comparable<AccountHolder> {
         sb.append(this.getNumberOfCheckingAccounts()).append(System.lineSeparator());
 
         for(CheckingAccount chk: this.checkingAccountList){
-            sb.append(chk.getTransactions().size()).append(System.lineSeparator());
             sb.append(chk.writeToString()).append(System.lineSeparator());
+            sb.append(chk.getTransactions().size()).append(System.lineSeparator());
             for(Transaction txn: chk.getTransactions()) sb.append(txn.writeToString()).append(System.lineSeparator());
         }
 

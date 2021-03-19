@@ -3,25 +3,19 @@ package com.meritamerica.assignment4;
 import java.text.*;
 import java.util.*;
 
-public class SavingsAccount extends BankAccount
-{
+public class SavingsAccount extends BankAccount {
 
     private static final double INTEREST_RATE = 0.01;
 
-    SavingsAccount(double openingBalance)
-    {
+    SavingsAccount(double openingBalance) {
         super(openingBalance, INTEREST_RATE, new java.util.Date());
     }
 
-    SavingsAccount(long accountNumber, double balance, double interestRate, Date accountOpenedOn)
-    {
+    SavingsAccount(long accountNumber, double balance, double interestRate, Date accountOpenedOn) {
         super(accountNumber, balance, interestRate, accountOpenedOn);
     }
 
-    static SavingsAccount readFromString(String accountData) throws ParseException, NumberFormatException
-    {
-        System.out.println(accountData);
-
+    static SavingsAccount readFromString(String accountData) throws ParseException, NumberFormatException {
         String[] tempArr = accountData.split(",");
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 

@@ -102,11 +102,11 @@ public class MeritBank {
         try(Scanner sc = new Scanner(new FileReader(fileName))) {
             setNextAccountNumber(0); // need to reset acct num and base off file
             setNextAccountNumber(Long.parseLong(sc.next()));
-            System.out.println(nextAccountNumber);
+            // System.out.println(nextAccountNumber);
 
             // --- CD OFFERS --- //
             CDOffering[] newCDarr = new CDOffering[sc.nextInt()];
-            System.out.println(newCDarr.length);
+            // System.out.println(newCDarr.length);
 
             for(int i = 0; i < newCDarr.length; i++) {
                 newCDarr[i] = CDOffering.readFromString(sc.next());
@@ -114,27 +114,25 @@ public class MeritBank {
             setCDOfferings(newCDarr);
 
             // --- ACCOUNT HOLDER --- //
-            // listOfAccountHolders = new AccountHolder[Integer.parseInt(sc.next())];
             int numOfAHs = Integer.parseInt(sc.next());
-            System.out.println(numOfAHs);
+            // System.out.println(numOfAHs);
 
             for(int i = 0; i < numOfAHs; i++) {
                 AccountHolder tempAcct = AccountHolder.readFromString(sc.next());
                 accountHolders = Arrays.copyOf(accountHolders, accountHolders.length +1);
                 accountHolders[accountHolders.length - 1] = tempAcct;
                 listOfAccountHolders = accountHolders;
-                // addAccountHolder(tempAcct);
 
                 // --- CHECK ACCT + TXNs --- //
                 int numOfCheckAccts = sc.nextInt();
-                System.out.println(numOfCheckAccts);
+                //System.out.println(numOfCheckAccts);
 
                 for(int j = 0; j < numOfCheckAccts; j++) {
                     CheckingAccount newChk = CheckingAccount.readFromString(sc.next());
                     listOfAccountHolders[i].addCheckingAccount(newChk);
 
                     int numOfTxns = sc.nextInt();
-                    System.out.println(numOfTxns);
+                    //System.out.println(numOfTxns);
 
                     for(int k = 0; k < numOfTxns; k++) {
                         transactions.add(sc.next());
@@ -143,14 +141,14 @@ public class MeritBank {
 
                 // --- SAVINGS ACCT + TXNs --- //
                 int numOfSavAccts = sc.nextInt();
-                System.out.println(numOfSavAccts);
+                // System.out.println(numOfSavAccts);
 
                 for(int j = 0; j < numOfSavAccts; j++) {
                     SavingsAccount newSav = SavingsAccount.readFromString(sc.next());
                     listOfAccountHolders[i].addSavingsAccount(newSav);
 
                     int numOfTxns = sc.nextInt();
-                    System.out.println(numOfTxns);
+                    // System.out.println(numOfTxns);
 
                     for(int k = 0; k < numOfTxns; k++) {
                         transactions.add(sc.next());
@@ -159,14 +157,14 @@ public class MeritBank {
 
                 // --- CD ACCT + TXNs ---//
                 int numOfCDAccts = sc.nextInt();
-                System.out.println(numOfCDAccts);
+                // System.out.println(numOfCDAccts);
 
                 for(int j = 0; j < numOfCDAccts; j++) {
                     CDAccount newCD = CDAccount.readFromString(sc.next());
                     listOfAccountHolders[i].addCDAccount(newCD);
 
                     int numOfTxns = sc.nextInt();
-                    System.out.println(numOfTxns);
+                    // System.out.println(numOfTxns);
 
                     for(int k = 0; k < numOfTxns; k++) {
                         // Transaction newTxns = Transaction.readFromString(sc.next());
@@ -177,7 +175,7 @@ public class MeritBank {
             }
             // --- FRAUD TXNs ---//
             int numInFraudQueue = sc.nextInt();
-            System.out.println(numInFraudQueue);
+            // System.out.println(numInFraudQueue);
 
             for (int j = 0; j < numInFraudQueue; j++) {
                 Transaction newFraudTxn = Transaction.readFromString(sc.next());
@@ -206,12 +204,15 @@ public class MeritBank {
 
     static boolean writeToFile(String fileName) {
         StringBuilder fileWriteStr = new StringBuilder();
+        fileWriteStr.append("Next Account Number:").append(System.lineSeparator());
         fileWriteStr.append(nextAccountNumber).append(System.lineSeparator());
 
+        fileWriteStr.append("Number of CD Offers and Offer Info:").append(System.lineSeparator());
         fileWriteStr.append(listOfCDOffers.length).append(System.lineSeparator());
         for(CDOffering cd: listOfCDOffers) fileWriteStr.append(cd.writeToString());
 
-        fileWriteStr.append(String.valueOf(listOfAccountHolders.length)).append(System.lineSeparator());
+        fileWriteStr.append("Number of Accounts:").append(System.lineSeparator());
+        fileWriteStr.append(listOfAccountHolders.length).append(System.lineSeparator());
         for(AccountHolder ah: listOfAccountHolders) fileWriteStr.append(ah.writeToString());
 
         try(FileWriter fr = new FileWriter(fileName)) {

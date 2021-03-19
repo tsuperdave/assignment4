@@ -27,8 +27,7 @@ public abstract class BankAccount {
         this.accountOpenedOn = accountOpenedOn;
     }
 
-    long getAccountNumber()
-    {
+    long getAccountNumber() {
         return this.accountNumber;
     }
 
@@ -36,8 +35,7 @@ public abstract class BankAccount {
         return this.balance;
     }
 
-    double getInterestRate()
-    {
+    double getInterestRate() {
         return interestRate;
     }
 
@@ -58,8 +56,7 @@ public abstract class BankAccount {
         return false;
     }
 
-    boolean deposit(double amount)
-    {
+    boolean deposit(double amount){
         if (amount > 0) {
             this.balance += amount;
             return true;
@@ -71,8 +68,7 @@ public abstract class BankAccount {
         this.listOfTransactions.add(transaction);
     }
 
-    public List<Transaction> getTransactions()
-    {
+    public List<Transaction> getTransactions() {
         return listOfTransactions;
     }
 
@@ -81,6 +77,5 @@ public abstract class BankAccount {
         String[] newStr = {String.valueOf(accountNumber), String.valueOf(balance), String.format("%.4f", interestRate), formattedDate};
         return String.join(",", newStr);
     }
-
 }
 
