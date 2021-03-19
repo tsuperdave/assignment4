@@ -9,6 +9,8 @@ public class TransferTransaction extends Transaction
         this.sourceAcct = sourceAccount;
         this.targetAcct = targetAccount;
         this.amount = amount;
+        this.txnDate = new Date();
+        // TODO --- add TXN dates in sub classes?
     }
 
     @Override

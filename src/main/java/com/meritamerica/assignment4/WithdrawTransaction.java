@@ -9,6 +9,7 @@ public class WithdrawTransaction extends Transaction
     {
         this.targetAcct = targetAccount;
         this.amount = amount;
+        this.txnDate = new Date();
     }
 
     @Override

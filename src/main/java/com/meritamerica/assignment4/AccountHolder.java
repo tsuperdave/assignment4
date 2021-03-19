@@ -267,22 +267,26 @@ public class AccountHolder implements Comparable<AccountHolder> {
         sb.append(this.getNumberOfCheckingAccounts()).append(System.lineSeparator());
 
         for(CheckingAccount chk: this.checkingAccountList){
-            sb.append(chk.writeToString()).append(System.lineSeparator());
             sb.append(chk.getTransactions().size()).append(System.lineSeparator());
+            sb.append(chk.writeToString()).append(System.lineSeparator());
             for(Transaction txn: chk.getTransactions()) sb.append(txn.writeToString()).append(System.lineSeparator());
         }
 
+        sb.append(this.getNumberOfSavingsAccounts()).append(System.lineSeparator());
         for(SavingsAccount sav: this.savingsAccountList){
-            sb.append(sav.writeToString()).append(System.lineSeparator());
             sb.append(sav.getTransactions()).append(System.lineSeparator());
+            sb.append(sav.writeToString()).append(System.lineSeparator());
             for(Transaction txn: sav.getTransactions()) sb.append(txn.writeToString()).append(System.lineSeparator());
         }
 
+        sb.append(this.getNumberOfCDAccounts()).append(System.lineSeparator());
         for(CDAccount cd: this.cdAccountList){
-            sb.append(cd.writeToString()).append(System.lineSeparator());
             sb.append(cd.getTransactions()).append(System.lineSeparator());
+            sb.append(cd.writeToString()).append(System.lineSeparator());
             for(Transaction txn: cd.getTransactions()) sb.append(txn.writeToString()).append(System.lineSeparator());
         }
+
+        // TODO-- add fraudqueue txn's to writer
 
         return sb.toString();
     }
