@@ -195,6 +195,7 @@ public class AccountHolder implements Comparable<AccountHolder> {
         /*
         Need to modify exception class methods to accept a string to display
          */
+        /*
         if((openingBalance + (getCombinedBalance() - getCDBalance()) >= BALANCE_LIMIT))
         {
             throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit. Unable to open new account at this time");
@@ -226,8 +227,10 @@ public class AccountHolder implements Comparable<AccountHolder> {
         }
         tempArr[tempArr.length - 1] = newSavingsAccount;
         this.savingsAccountList = tempArr;
+        */
 
-        return newSavingsAccount;
+
+        return this.addSavingsAccount(new SavingsAccount(openingBalance));
     }
 
     SavingsAccount addSavingsAccount(SavingsAccount savingsAccount) throws ExceedsCombinedBalanceLimitException, ExceedsFraudSuspicionLimitException, NegativeAmountException
