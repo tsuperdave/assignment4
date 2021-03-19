@@ -2,6 +2,7 @@ package com.meritamerica.assignment4;
 
 import com.sun.org.apache.xpath.internal.operations.Neg;
 
+import javax.sound.midi.SysexMessage;
 import java.io.BufferedReader;
 public class AccountHolder implements Comparable<AccountHolder> {
     private static final double BALANCE_LIMIT = 250000;
@@ -49,7 +50,7 @@ public class AccountHolder implements Comparable<AccountHolder> {
     }
 
     String getLastName() {
-        return lastName;
+        return this.lastName;
     }
 
     void setLastName(String lastName) {
@@ -57,7 +58,7 @@ public class AccountHolder implements Comparable<AccountHolder> {
     }
 
     String getSSN() {
-        return ssn;
+        return this.ssn;
     }
 
     void setSSN(String ssn) {
@@ -77,23 +78,8 @@ public class AccountHolder implements Comparable<AccountHolder> {
             throw new ExceedsFraudSuspicionLimitException("Possible fraud detected. Transaction is being sent to fraud detection services for review");
         }
 
-        //DepositTransaction transaction = new DepositTransaction(checkingAccount, checkingAccount.getBalance());
         checkingAccount.addTransaction(new DepositTransaction(checkingAccount, checkingAccount.getBalance()));
-/*
-        try {
-            MeritBank.processTransaction(transaction);
-        }
-        catch (ExceedsFraudSuspicionLimitException e) {
-            throw new ExceedsFraudSuspicionLimitException("Possible fraud detected. Transaction is being sent to fraud detection services for review");
-        }
-        catch (NegativeAmountException e) {
-            throw new NegativeAmountException("Unable to process request. Transaction amount must be greater than $0");
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-*/
+
         CheckingAccount[] tempArr = new CheckingAccount[this.checkingAccountList.length + 1];
         for(int i = 0; i<this.checkingAccountList.length; i++) {
             tempArr[i] = this.checkingAccountList[i];
@@ -144,22 +130,8 @@ public class AccountHolder implements Comparable<AccountHolder> {
             throw new ExceedsFraudSuspicionLimitException("Possible fraud detected. Transaction is being sent to fraud detection services for review");
         }
 
-        // DepositTransaction transaction = new DepositTransaction(savingsAccount, getSavingsBalance());
         savingsAccount.addTransaction(new DepositTransaction(savingsAccount, savingsAccount.getBalance()));
-/*
-        try {
-            MeritBank.processTransaction(transaction);
-        }
-        catch (ExceedsFraudSuspicionLimitException e) {
-            throw new ExceedsFraudSuspicionLimitException("Possible fraud detected. Transaction is being sent to fraud detection services for review");
-        }
-        catch (NegativeAmountException e) {
-            throw new NegativeAmountException("Unable to process request. Transaction amount must be greater than $0");
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-*/
+
         SavingsAccount[] tempArr = new SavingsAccount[this.savingsAccountList.length + 1];
         for(int i = 0; i<this.savingsAccountList.length; i++) {
             tempArr[i] = this.savingsAccountList[i];
@@ -282,42 +254,37 @@ public class AccountHolder implements Comparable<AccountHolder> {
         String[] tempArr = accountHolderData.split(",");
         String tempFirstName = "", tempMidName = "", TempLastName = "", tempSSN = "";
 
-        tempFirstName += tempArr[0];
+        tempFirstName += tempArr[2];
         tempMidName += tempArr[1];
-        TempLastName += tempArr[2];
+        TempLastName += tempArr[0];
         tempSSN += tempArr[3];
 
         return new AccountHolder(tempFirstName, tempMidName, TempLastName, tempSSN);
     }
 
     String writeToString() {
-        // Store num of accounts as str to concat into result
-        int tempNumOfChk = this.getNumberOfCheckingAccounts(),
-                tempNumOfSav = this.getNumberOfSavingsAccounts(),
-                tempNumOfCDs = this.getNumberOfCDAccounts();
+        StringBuilder sb = new StringBuilder(this.lastName).append(",").append(this.middleName).append(",").append(this.firstName).append(",").append(this.ssn).append(System.lineSeparator());
+        sb.append(this.getNumberOfCheckingAccounts()).append(System.lineSeparator());
 
-        // resulting string to add to
-        String result = getLastName() + "," + getMiddleName() + "," + getFirstName() + "," + getSSN() + "\n" +
-                tempNumOfChk + "\n";
-
-        // loop over checking accounts, run writeToString to return data from class
-        for(int i = 0; i < tempNumOfChk; i++) {
-            result += this.checkingAccountList[i].writeToString() + "\n";
-        }
-        result += tempNumOfSav + "\n";
-
-        // loop over savings accounts, run writeToString to return data from class
-        for(int i = 0; i < tempNumOfSav; i++) {
-            result += this.savingsAccountList[i].writeToString() + "\n";
-        }
-        result += tempNumOfCDs + "\n";
-
-        // loop over cd accounts, run writeToString to return data from class
-        for(int i = 0; i < tempNumOfCDs; i++) {
-            result += this.cdAccountList[i].writeToString() + "\n";
+        for(CheckingAccount chk: this.checkingAccountList){
+            sb.append(chk.writeToString()).append(System.lineSeparator());
+            sb.append(chk.getTransactions().size()).append(System.lineSeparator());
+            for(Transaction txn: chk.getTransactions()) sb.append(txn.writeToString()).append(System.lineSeparator());
         }
 
-        return result;
+        for(SavingsAccount sav: this.savingsAccountList){
+            sb.append(sav.writeToString()).append(System.lineSeparator());
+            sb.append(sav.getTransactions()).append(System.lineSeparator());
+            for(Transaction txn: sav.getTransactions()) sb.append(txn.writeToString()).append(System.lineSeparator());
+        }
+
+        for(CDAccount cd: this.cdAccountList){
+            sb.append(cd.writeToString()).append(System.lineSeparator());
+            sb.append(cd.getTransactions()).append(System.lineSeparator());
+            for(Transaction txn: cd.getTransactions()) sb.append(txn.writeToString()).append(System.lineSeparator());
+        }
+
+        return sb.toString();
     }
 
     double getCombinedBalance() {

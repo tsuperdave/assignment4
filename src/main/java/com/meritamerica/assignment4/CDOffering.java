@@ -42,7 +42,7 @@ public class CDOffering
 
     String writeToString()
     {
-        return String.valueOf(this.term) + "," + this.interestRate;
+        return String.valueOf(this.term) + "," + this.interestRate + "\n";
     }
 
 }

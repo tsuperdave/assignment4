@@ -1,0 +1,52 @@
+11
+3
+1,0.018
+3,0.01919
+5,0.02
+2
+Doe,,John,1234567890
+1
+1,900.0,0.0001,01/01/2020
+3
+-1,1,900.0,dd/MM/yyyy
+1,2,100.0,dd/MM/yyyy
+-1,1,1000.0,dd/MM/yyyy
+2,1000.0,0.0100,01/02/2020
+[com.meritamerica.assignment4.DepositTransaction@330bedb4, com.meritamerica.assignment4.TransferTransaction@2503dbd3, com.meritamerica.assignment4.DepositTransaction@4b67cf4d, com.meritamerica.assignment4.DepositTransaction@7ea987ac, com.meritamerica.assignment4.WithdrawTransaction@12a3a380]
+-1,2,1000.0,dd/MM/yyyy
+1,2,100.0,dd/MM/yyyy
+-1,2,500.0,dd/MM/yyyy
+-1,2,700.0,dd/MM/yyyy
+-1,2,-200.0,dd/MM/yyyy
+3,151.0,0.0100,01/02/2020
+[com.meritamerica.assignment4.DepositTransaction@29453f44, com.meritamerica.assignment4.DepositTransaction@5cad8086]
+-1,3,151.0,dd/MM/yyyy
+-1,3,150.0,dd/MM/yyyy
+Doe,S,Jane,0987654321
+2
+4,100.0,0.0001,12/01/2019
+2
+-1,4,100.0,dd/MM/yyyy
+-1,4,100.0,dd/MM/yyyy
+5,200.0,0.0001,12/03/0021
+2
+-1,5,200.0,dd/MM/yyyy
+-1,5,200.0,dd/MM/yyyy
+6,150.0,0.0100,12/01/2019
+[com.meritamerica.assignment4.DepositTransaction@6e0be858, com.meritamerica.assignment4.DepositTransaction@61bbe9ba]
+-1,6,150.0,dd/MM/yyyy
+-1,6,150.0,dd/MM/yyyy
+7,210.0,0.0100,12/03/2020
+[com.meritamerica.assignment4.DepositTransaction@610455d6, com.meritamerica.assignment4.DepositTransaction@511d50c0]
+-1,7,210.0,dd/MM/yyyy
+-1,7,210.0,dd/MM/yyyy
+8,900.0,0.0100,01/01/2020
+[com.meritamerica.assignment4.DepositTransaction@60e53b93, com.meritamerica.assignment4.DepositTransaction@5e2de80c]
+-1,8,900.0,dd/MM/yyyy
+-1,8,900.0,dd/MM/yyyy
+9,500.0,0.02,Wed Jan 01 00:00:00 CST 2020,5
+[com.meritamerica.assignment4.DepositTransaction@266474c2]
+-1,9,500.0,dd/MM/yyyy
+10,500.0,0.025,Wed Jan 01 00:00:00 CST 2020,10
+[com.meritamerica.assignment4.DepositTransaction@6f94fa3e]
+-1,10,500.0,dd/MM/yyyy

@@ -6,11 +6,7 @@ public class MeritAmericaBankApp
 	{
 
 		MeritBank.readFromFile("src/test/testMeritBank_good.txt");
-		MeritBank.sortAccountHolders();
-		// System.out.println(MeritBank.totalBalances());
-		System.out.println(MeritBank.getAccountHolders()[0].getCombinedBalance()); // ah1 total bal
-
-		System.out.println(MeritBank.getAccountHolders()[1].getCombinedBalance()); // ah2 total bal
+		MeritBank.writeToFile("src/test/writeTest");
 
 
 		// -------- WEEK 3 TESTS --------- //

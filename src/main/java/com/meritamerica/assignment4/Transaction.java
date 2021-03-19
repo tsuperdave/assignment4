@@ -99,24 +99,16 @@ public abstract class Transaction
 
     }
 
-    public String writeToString()
-    {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    public String writeToString() {
+        String formattedDate = new String("dd/MM/yyyy");
         StringBuilder newStr = new StringBuilder();
-        if(sourceAcct == null)
-        {
+
+        if(sourceAcct == null) {
             newStr.append(-1);
-        }
-        else
-        {
+        } else {
             newStr.append(sourceAcct.getAccountNumber());
         }
-        newStr.append(",");
-        newStr.append(targetAcct.getAccountNumber());
-        newStr.append(",");
-        newStr.append(amount);
-        newStr.append(",");
-        newStr.append(dateFormat.format(txnDate));
+        newStr.append(",").append(targetAcct.getAccountNumber()).append(",").append(amount).append(",").append(String.format(formattedDate, txnDate));
 
         return newStr.toString();
     }

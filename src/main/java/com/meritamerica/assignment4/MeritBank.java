@@ -205,22 +205,19 @@ public class MeritBank {
     }
 
     static boolean writeToFile(String fileName) {
-        try(BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
-            bw.write(String.valueOf(nextAccountNumber)); bw.newLine();
+        StringBuilder fileWriteStr = new StringBuilder();
+        fileWriteStr.append(nextAccountNumber).append(System.lineSeparator());
 
-            bw.write(String.valueOf(listOfCDOffers.length)); bw.newLine();
-            for(int i = 0; i < listOfCDOffers.length; i++) {
-                bw.write(listOfCDOffers[i].writeToString()); bw.newLine();
-            }
+        fileWriteStr.append(listOfCDOffers.length).append(System.lineSeparator());
+        for(CDOffering cd: listOfCDOffers) fileWriteStr.append(cd.writeToString());
 
-            bw.write(String.valueOf(listOfAccountHolders.length)); bw.newLine();
-            // sortAccountHolders();
-            for(int i = 0; i < listOfAccountHolders.length; i++) {
-                bw.write(listOfAccountHolders[i].writeToString()); bw.newLine();
-            }
-            bw.flush();
-        }catch(Exception e) {
-            e.printStackTrace();
+        fileWriteStr.append(String.valueOf(listOfAccountHolders.length)).append(System.lineSeparator());
+        for(AccountHolder ah: listOfAccountHolders) fileWriteStr.append(ah.writeToString());
+
+        try(FileWriter fr = new FileWriter(fileName)) {
+                fr.write(fileWriteStr.toString());
+        } catch (IOException e) {
+            return false;
         }
         return true;
     }

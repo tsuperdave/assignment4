@@ -77,15 +77,9 @@ public abstract class BankAccount {
     }
 
     String writeToString() {
-        String tempAcctNum = String.valueOf(accountNumber),
-                tempBalance = String.valueOf(balance),
-                tempIntRate = String.valueOf(interestRate),
-                tempOpenDate = String.valueOf(accountOpenedOn);
-        
-        return tempAcctNum + "," +
-                tempBalance + "," +
-                tempIntRate + "," +
-                tempOpenDate; 
+        String formattedDate = new SimpleDateFormat("dd/MM/yyyy").format(accountOpenedOn);
+        String[] newStr = {String.valueOf(accountNumber), String.valueOf(balance), String.format("%.4f", interestRate), formattedDate};
+        return String.join(",", newStr);
     }
 
 }
