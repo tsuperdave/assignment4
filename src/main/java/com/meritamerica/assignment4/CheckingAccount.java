@@ -3,22 +3,18 @@ package com.meritamerica.assignment4;
 import java.text.*;
 import java.util.*;
 
-public class CheckingAccount extends BankAccount
-{
+public class CheckingAccount extends BankAccount {
     private static final double INTEREST_RATE = 0.0001;
 
-    CheckingAccount(double openingBalance)
-    {
+    CheckingAccount(double openingBalance) {
         super(openingBalance, INTEREST_RATE, new java.util.Date());
     }
 
-    CheckingAccount(long accountNumber, double balance, double interestRate, Date accountOpenedOn)
-    {
+    CheckingAccount(long accountNumber, double balance, double interestRate, Date accountOpenedOn) {
         super(accountNumber, balance, interestRate, accountOpenedOn);
     }
 
-    static CheckingAccount readFromString(String accountData) throws ParseException, NumberFormatException
-    {
+    static CheckingAccount readFromString(String accountData) throws ParseException, NumberFormatException {
         System.out.println(accountData);
 
         String[] tempArr = accountData.split(",");

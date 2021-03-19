@@ -12,18 +12,15 @@ public abstract class BankAccount {
     protected double balance;
     protected double interestRate;
 
-    BankAccount(double balance, double interestRate) //
-    {
-        this(MeritBank.getNextAccountNumber(), balance, interestRate, new java.util.Date());
+    BankAccount(double balance, double interestRate) {
+        this(MeritBank.getNextAccountNumber(), balance, interestRate, new Date());
     }
 
-    BankAccount(double balance, double interestRate, Date accountOpenedOn) //
-    {
+    BankAccount(double balance, double interestRate, Date accountOpenedOn) {
         this(MeritBank.getNextAccountNumber(), balance, interestRate, accountOpenedOn);
     }
 
-    BankAccount(long accountNumber, double balance, double interestRate, Date accountOpenedOn) //
-    {
+    BankAccount(long accountNumber, double balance, double interestRate, Date accountOpenedOn) {
         this.accountNumber = accountNumber;
         this.balance = balance;
         this.interestRate = interestRate;
@@ -35,9 +32,8 @@ public abstract class BankAccount {
         return this.accountNumber;
     }
 
-    double getBalance()
-    {
-        return balance;
+    double getBalance() {
+        return this.balance;
     }
 
     double getInterestRate()
@@ -45,19 +41,17 @@ public abstract class BankAccount {
         return interestRate;
     }
 
-    public double futureValue(int years)
-    {
+    public double futureValue(int years) {
         return this.balance * (Math.pow(1 + this.interestRate, years));
     }
 
     Date getOpenedOn()
     {
-        return accountOpenedOn;
+        return this.accountOpenedOn;
     }
 
-    boolean withdraw(double amount)
-    {
-        if ((amount > 0) && (amount <= balance)) {
+    boolean withdraw(double amount) {
+        if ((amount > 0) && (amount <= this.balance)) {
             this.balance -= amount;
             return true;
         }
@@ -73,8 +67,7 @@ public abstract class BankAccount {
         return false;
     }
 
-    public void addTransaction(Transaction transaction)
-    {
+    public void addTransaction(Transaction transaction) {
         this.listOfTransactions.add(transaction);
     }
 
@@ -83,8 +76,7 @@ public abstract class BankAccount {
         return listOfTransactions;
     }
 
-    String writeToString()
-    {
+    String writeToString() {
         String tempAcctNum = String.valueOf(accountNumber),
                 tempBalance = String.valueOf(balance),
                 tempIntRate = String.valueOf(interestRate),

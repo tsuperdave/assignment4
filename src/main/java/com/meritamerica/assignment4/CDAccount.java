@@ -8,27 +8,19 @@ import java.util.*;
 public class CDAccount extends BankAccount {
 
     protected CDOffering cdOffering;
-    private final Date accountOpenedOn;
-    private double balance;
-    private int term;
+    protected final Date accountOpenedOn;
+    protected int term;
 
-    CDAccount(CDOffering offering, double balance)
-    {
+    CDAccount(CDOffering offering, double balance) {
         super(balance, offering.getInterestRate());
         this.cdOffering = offering;
         this.accountOpenedOn = new Date();
     }
 
-    CDAccount(long accountNumber, double balance, double interestRate, Date accountOpenedOn, int term)
-    {
+    CDAccount(long accountNumber, double balance, double interestRate, Date accountOpenedOn, int term) {
         super(accountNumber, balance, interestRate, accountOpenedOn);
         this.term = term;
         this.accountOpenedOn = accountOpenedOn;
-    }
-
-    double getBalance()
-    {
-        return super.getBalance();
     }
 
     double getInterestRate()
@@ -38,7 +30,7 @@ public class CDAccount extends BankAccount {
 
     long getAccountNumber()
     {
-        return  super.accountNumber;
+        return super.accountNumber;
     }
 
     int getTerm()
@@ -58,6 +50,7 @@ public class CDAccount extends BankAccount {
 
     static CDAccount readFromString(String accountData) throws ParseException, NumberFormatException
     {
+
         System.out.println(accountData);
 
         String[] tempArr = accountData.split(",");
@@ -67,7 +60,6 @@ public class CDAccount extends BankAccount {
         double tempBal = Double.parseDouble(tempArr[1]), tempIntRate = Double.parseDouble(tempArr[2]);
         Date tempOpenDate = dateFormat.parse(tempArr[3]);
         int tempTerm = Integer.parseInt(tempArr[4]);
-
         return new CDAccount(tempAcctNum, tempBal, tempIntRate, tempOpenDate, tempTerm);
     }
 

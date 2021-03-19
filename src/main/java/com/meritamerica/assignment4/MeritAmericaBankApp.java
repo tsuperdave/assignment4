@@ -4,7 +4,14 @@ public class MeritAmericaBankApp
 {
 	public static void main(String[] args)
 	{
-		System.out.println(MeritBank.readFromFile("src/test/testMeritBank_good.txt"));
+
+		MeritBank.readFromFile("src/test/testMeritBank_good.txt");
+		MeritBank.sortAccountHolders();
+		// System.out.println(MeritBank.totalBalances());
+		System.out.println(MeritBank.getAccountHolders()[0].getCombinedBalance()); // ah1 total bal
+
+		System.out.println(MeritBank.getAccountHolders()[1].getCombinedBalance()); // ah2 total bal
+
 
 		// -------- WEEK 3 TESTS --------- //
 		/*
