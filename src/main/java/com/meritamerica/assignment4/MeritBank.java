@@ -286,42 +286,51 @@ public class MeritBank
 
     public static boolean processTransaction(Transaction transaction) throws NegativeAmountException, ExceedsAvailableBalanceException, ExceedsFraudSuspicionLimitException
     {
+
+
         BankAccount sourceAcct = transaction.getSourceAccount();
         BankAccount targetAcct = transaction.getTargetAccount();
 
-        if (sourceAcct == null) {
-            /*
-            Processing instances of a Withdrawal
-             */
-            if (transaction instanceof WithdrawTransaction) {
-                if (transaction.getAmount() < 0) {
+        if (sourceAcct == null)
+        {
+
+            // Processing instances of a Withdrawal
+
+            if (transaction instanceof WithdrawTransaction)
+            {
+                if (transaction.getAmount() < 0)
+                {
                     throw new NegativeAmountException("Unable to process request. Transaction amount must be greater than $0");
                 }
-                if (targetAcct.getBalance() + transaction.getAmount() < 0) {
+                if (targetAcct.getBalance() + -(transaction.getAmount()) < targetAcct.getBalance())
+                {
                     throw new ExceedsAvailableBalanceException("Insufficient Funds");
                 }
-                if (transaction.getAmount() < -1000) {
+                if (transaction.getAmount() > 1000)
+                {
                     fraudQueue.addTransaction(transaction);
                     throw new ExceedsFraudSuspicionLimitException("Possible fraud detected. Transaction is being sent to fraud detection services for review");
                 }
                 return true;
             }
-                /*
-                Processing instances of a Deposit
-                */
-            if (transaction.getAmount() < 0) {
+
+               //  Processing instances of a Deposit
+
+            if (transaction.getAmount() < 0)
+            {
                 throw new NegativeAmountException("Unable to process request. Transaction amount must be greater than $0");
             }
-            if (transaction.getAmount() > 1000) {
+            if (transaction.getAmount() > 1000)
+            {
                 fraudQueue.addTransaction(transaction);
                 throw new ExceedsFraudSuspicionLimitException("Possible fraud detected. Transaction is being sent to fraud detection services for review");
             }
             return true;
         }
 
-            /*
-            Processing instances of a Transfer
-             */
+
+            // Processing instances of a Transfer
+
             if (sourceAcct.getBalance() < transaction.getAmount())
             {
                 throw new ExceedsAvailableBalanceException("Insufficient Funds");
@@ -339,7 +348,7 @@ public class MeritBank
                 sourceAcct.withdraw(transaction.amount);
                 targetAcct.deposit(transaction.amount);
             }
-        return true;
+            return true;
     }
     
     public static FraudQueue getFraudQueue()

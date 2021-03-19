@@ -5,6 +5,7 @@ import java.util.Date;
 
 public abstract class Transaction
 {
+    final double FRAUD_THRESHOLD = 1000;
     BankAccount sourceAcct;
     BankAccount targetAcct;
     Date txnDate;
@@ -19,7 +20,7 @@ public abstract class Transaction
 
     public BankAccount getSourceAccount()
     {
-        return sourceAcct;
+        return this.sourceAcct;
     }
 
     public void setTargetAccount(BankAccount targetAccount)
@@ -29,7 +30,7 @@ public abstract class Transaction
 
     public BankAccount getTargetAccount()
     {
-        return targetAcct;
+        return this.targetAcct;
     }
 
     public void setAmount(double amount)
@@ -49,7 +50,7 @@ public abstract class Transaction
 
     public Date getTransactionDate()
     {
-        return txnDate;
+        return this.txnDate;
     }
 
     public static Transaction readFromString(String transactionDataString) throws ParseException

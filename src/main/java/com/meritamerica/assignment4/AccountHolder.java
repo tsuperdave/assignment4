@@ -3,8 +3,7 @@ package com.meritamerica.assignment4;
 import com.sun.org.apache.xpath.internal.operations.Neg;
 
 import java.io.BufferedReader;
-public class AccountHolder implements Comparable<AccountHolder>
-{
+public class AccountHolder implements Comparable<AccountHolder> {
     private static final double BALANCE_LIMIT = 250000;
     private String firstName;
     private String middleName;
@@ -21,15 +20,15 @@ public class AccountHolder implements Comparable<AccountHolder>
     private double cdBal;
     private double combinedBal;
 
-    AccountHolder(){}
+    AccountHolder() {
+    }
 
     AccountHolder(
             String firstName,
             String middleName,
             String lastName,
             String ssn
-    )
-    {
+    ) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
@@ -43,19 +42,41 @@ public class AccountHolder implements Comparable<AccountHolder>
         this.combinedBal = 0;
     }
 
-    String getFirstName(){ return firstName; }
-    void setFirstName(String firstName){ this.firstName = firstName; }
+    String getFirstName() {
+        return firstName;
+    }
 
-    String getMiddleName(){return middleName;}
-    void setMiddleName(String middleName){ this.middleName = middleName; }
+    void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-    String getLastName(){ return lastName; }
-    void setLastName(String lastName){ this.lastName = lastName; }
+    String getMiddleName() {
+        return middleName;
+    }
 
-    String getSSN(){ return ssn; }
-    void setSSN(String ssn){ this.ssn = ssn; }
+    void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
 
-    double getCombinedBalance(){ return getCheckingBalance() + getSavingsBalance() + getCDBalance(); }
+    String getLastName() {
+        return lastName;
+    }
+
+    void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    String getSSN() {
+        return ssn;
+    }
+
+    void setSSN(String ssn) {
+        this.ssn = ssn;
+    }
+
+    double getCombinedBalance() {
+        return getCheckingBalance() + getSavingsBalance() + getCDBalance();
+    }
 
     /* CHECKING ACCOUNT */
     CheckingAccount addCheckingAccount(double openingBalance) throws ExceedsCombinedBalanceLimitException, ExceedsFraudSuspicionLimitException, NegativeAmountException
@@ -64,7 +85,8 @@ public class AccountHolder implements Comparable<AccountHolder>
         /*
         Need to modify exception class methods to accept a string to display
          */
-        if((openingBalance + (getCombinedBalance() - getCDBalance()) >= BALANCE_LIMIT))
+        /*
+        if(getCheckingBalance() + (getCombinedBalance() - getCDBalance()) >= BALANCE_LIMIT)
         {
             throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit. Unable to open new account at this time");
         }
@@ -97,15 +119,18 @@ public class AccountHolder implements Comparable<AccountHolder>
         }
         tempArr[tempArr.length - 1] = newCheckingAccount;
         this.checkingAccountList = tempArr;
+        */
 
-        return newCheckingAccount;
+        return this.addCheckingAccount(new CheckingAccount(openingBalance));
     }
 
-    CheckingAccount addCheckingAccount(CheckingAccount checkingAccount) throws ExceedsCombinedBalanceLimitException, ExceedsFraudSuspicionLimitException, NegativeAmountException
-    {
-
-        if ((getCheckingBalance() + (getCombinedBalance() - getCDBalance()) >= BALANCE_LIMIT)) {
+    CheckingAccount addCheckingAccount(CheckingAccount checkingAccount) throws ExceedsCombinedBalanceLimitException, ExceedsFraudSuspicionLimitException, NegativeAmountException {
+        if ((getCheckingBalance() + (getCombinedBalance() - getCDBalance()) >= BALANCE_LIMIT))
+        {
             throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit. Unable to open new account at this time");
+        } else if(checkingAccount.getBalance() > 1000)
+        {
+            throw new ExceedsFraudSuspicionLimitException("Possible fraud detected. Transaction is being sent to fraud detection services for review");
         }
 
         DepositTransaction transaction = new DepositTransaction(checkingAccount, checkingAccount.getBalance());
@@ -119,7 +144,8 @@ public class AccountHolder implements Comparable<AccountHolder>
         catch (NegativeAmountException e) {
             throw new NegativeAmountException("Unable to process request. Transaction amount must be greater than $0");
         }
-        catch (Exception e) {
+        catch(Exception e)
+        {
             e.printStackTrace();
         }
 
@@ -211,7 +237,7 @@ public class AccountHolder implements Comparable<AccountHolder>
         If combined balance limit is exceeded, throw ExceedsCombinedBalanceLimitException
         Should also add a deposit transaction with the opening balance
          */
-        if ((getSavingsBalance() + (getCombinedBalance() - getCDBalance()) >= BALANCE_LIMIT))
+        if (getSavingsBalance() + (getCombinedBalance() - getCDBalance()) >= BALANCE_LIMIT)
         {
             throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit. Unable to open new account at this time");
         }

@@ -47,14 +47,7 @@ public abstract class BankAccount {
 
     public double futureValue(int years)
     {
-        return (balance * (Math.pow((1 + interestRate), years)));
-    }
-
-    public static double recursiveFutureValue(double amount, int term, double interestRate)
-    {
-        double futureVal = amount + (amount * term);
-        if(term <= 1 || amount <= 0 || interestRate <= 0) return futureVal;
-        return recursiveFutureValue(futureVal, --term, interestRate);
+        return this.balance * (Math.pow(1 + this.interestRate, years));
     }
 
     Date getOpenedOn()
