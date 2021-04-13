@@ -5,9 +5,8 @@ import java.util.*;
 
 public abstract class BankAccount {
 
-
-    private List<Transaction> listOfTransactions = new ArrayList<Transaction>();
-    java.util.Date accountOpenedOn;
+    List<Transaction> listOfTransactions = new ArrayList<Transaction>();
+    Date accountOpenedOn;
     protected long accountNumber;
     protected double balance;
     protected double interestRate;
@@ -39,13 +38,13 @@ public abstract class BankAccount {
         return interestRate;
     }
 
-    public double futureValue(int years) {
-        return this.balance * (Math.pow(1 + this.interestRate, years));
-    }
-
     Date getOpenedOn()
     {
         return this.accountOpenedOn;
+    }
+
+    public double futureValue(int years) {
+        return this.balance * (Math.pow(1 + this.interestRate, years));
     }
 
     boolean withdraw(double amount) {
@@ -71,10 +70,24 @@ public abstract class BankAccount {
     public List<Transaction> getTransactions() {
         return listOfTransactions;
     }
+    
+    /*
+    public static BankAccount readFromString(String accountData) throws ParseException {
+        String[] data = accountData.split(",");
+
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        int tempAcctNum = Integer.parseInt(data[0]);
+        double tampBal = Double.parseDouble(data[1]);
+        double tempIntRate = Double.parseDouble(data[2]);
+        Date tempOpenDate = formatter.parse(data[3]);
+
+        return new BankAccount(tempAcctNum, tampBal, tempIntRate, tempOpenDate);
+    }
+    */
 
     String writeToString() {
-        String formattedDate = new SimpleDateFormat("dd/MM/yyyy").format(accountOpenedOn);
-        String[] newStr = {String.valueOf(accountNumber), String.valueOf(balance), String.format("%.4f", interestRate), formattedDate};
+        String formattedDate = new SimpleDateFormat("dd/MM/yyyy").format(this.accountOpenedOn);
+        String[] newStr = {String.valueOf(this.accountNumber), String.valueOf(this.balance), String.format("%.4f", this.interestRate), formattedDate};
         return String.join(",", newStr);
     }
 }

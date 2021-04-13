@@ -15,7 +15,7 @@ public class SavingsAccount extends BankAccount {
         super(accountNumber, balance, interestRate, accountOpenedOn);
     }
 
-    static SavingsAccount readFromString(String accountData) throws ParseException, NumberFormatException {
+    public static SavingsAccount readFromString(String accountData) throws ParseException, NumberFormatException {
         String[] tempArr = accountData.split(",");
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 

@@ -4,6 +4,7 @@ import java.text.*;
 import java.util.*;
 
 public class CheckingAccount extends BankAccount {
+	
     private static final double INTEREST_RATE = 0.0001;
 
     CheckingAccount(double openingBalance) {
@@ -14,7 +15,7 @@ public class CheckingAccount extends BankAccount {
         super(accountNumber, balance, interestRate, accountOpenedOn);
     }
 
-    static CheckingAccount readFromString(String accountData) throws ParseException, NumberFormatException {
+    public static CheckingAccount readFromString(String accountData) throws ParseException, NumberFormatException {
         String[] tempArr = accountData.split(",");
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 

@@ -43,7 +43,7 @@ public class CDAccount extends BankAccount {
         return MeritBank.recursiveFutureValue(super.getBalance(), cdOffering.getTerm(), cdOffering.getInterestRate());
     }
 
-    static CDAccount readFromString(String accountData) throws ParseException, NumberFormatException {
+    public static CDAccount readFromString(String accountData) throws ParseException, NumberFormatException {
         String[] tempArr = accountData.split(",");
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 

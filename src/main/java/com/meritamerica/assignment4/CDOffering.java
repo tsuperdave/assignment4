@@ -20,8 +20,8 @@ public class CDOffering
 
     static CDOffering readFromString(String cdOfferingDataString) {
 
-        int tempTerm = 0;
-        double tempIntRate = 0;
+        int tempTerm;
+        double tempIntRate;
         int comma = cdOfferingDataString.indexOf(",");
         if(comma >= 0) {
             tempTerm = Integer.parseInt(cdOfferingDataString.substring(0, comma));

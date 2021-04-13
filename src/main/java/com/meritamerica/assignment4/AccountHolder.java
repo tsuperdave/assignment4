@@ -1,10 +1,7 @@
 package com.meritamerica.assignment4;
 
-import com.sun.org.apache.xpath.internal.operations.Neg;
-
-import javax.sound.midi.SysexMessage;
-import java.io.BufferedReader;
 public class AccountHolder implements Comparable<AccountHolder> {
+	
     private static final double BALANCE_LIMIT = 250000;
     final double FRAUD_THRESHOLD = 1000;
     private String firstName;
@@ -66,11 +63,11 @@ public class AccountHolder implements Comparable<AccountHolder> {
     }
 
     /* CHECKING ACCOUNT */
-    CheckingAccount addCheckingAccount(double openingBalance) throws ExceedsCombinedBalanceLimitException, ExceedsFraudSuspicionLimitException, NegativeAmountException {
+    CheckingAccount addCheckingAccount(double openingBalance) throws ExceedsCombinedBalanceLimitException, ExceedsFraudSuspicionLimitException {
         return this.addCheckingAccount(new CheckingAccount(openingBalance));
     }
 
-    CheckingAccount addCheckingAccount(CheckingAccount checkingAccount) throws ExceedsCombinedBalanceLimitException, ExceedsFraudSuspicionLimitException, NegativeAmountException {
+    CheckingAccount addCheckingAccount(CheckingAccount checkingAccount) throws ExceedsCombinedBalanceLimitException, ExceedsFraudSuspicionLimitException {
         if ((this.getCheckingBalance() + (this.getCombinedBalance() - this.getCDBalance()) >= BALANCE_LIMIT)) {
             throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit. Unable to open new account at this time");
         } else if(checkingAccount.getBalance() > FRAUD_THRESHOLD) {
@@ -80,9 +77,7 @@ public class AccountHolder implements Comparable<AccountHolder> {
         checkingAccount.addTransaction(new DepositTransaction(checkingAccount, checkingAccount.getBalance()));
 
         CheckingAccount[] tempArr = new CheckingAccount[this.checkingAccountList.length + 1];
-        for(int i = 0; i<this.checkingAccountList.length; i++) {
-            tempArr[i] = this.checkingAccountList[i];
-        }
+        System.arraycopy(this.checkingAccountList, 0, tempArr, 0, this.checkingAccountList.length);
         tempArr[tempArr.length - 1] = checkingAccount;
         this.checkingAccountList = tempArr;
 
@@ -113,11 +108,11 @@ public class AccountHolder implements Comparable<AccountHolder> {
     }
 
     /* SAVINGS ACCOUNT */
-    SavingsAccount addSavingsAccount(double openingBalance) throws ExceedsCombinedBalanceLimitException, ExceedsFraudSuspicionLimitException, NegativeAmountException {
+    SavingsAccount addSavingsAccount(double openingBalance) throws ExceedsCombinedBalanceLimitException, ExceedsFraudSuspicionLimitException {
         return this.addSavingsAccount(new SavingsAccount(openingBalance));
     }
 
-    SavingsAccount addSavingsAccount(SavingsAccount savingsAccount) throws ExceedsCombinedBalanceLimitException, ExceedsFraudSuspicionLimitException, NegativeAmountException {
+    SavingsAccount addSavingsAccount(SavingsAccount savingsAccount) throws ExceedsCombinedBalanceLimitException, ExceedsFraudSuspicionLimitException {
         if (this.getSavingsBalance() + (this.getCombinedBalance() - this.getCDBalance()) >= BALANCE_LIMIT) {
             throw new ExceedsCombinedBalanceLimitException("Balance exceeds limit. Unable to open new account at this time");
         } else if(savingsAccount.getBalance() > FRAUD_THRESHOLD){
@@ -127,12 +122,9 @@ public class AccountHolder implements Comparable<AccountHolder> {
         savingsAccount.addTransaction(new DepositTransaction(savingsAccount, savingsAccount.getBalance()));
 
         SavingsAccount[] tempArr = new SavingsAccount[this.savingsAccountList.length + 1];
-        for(int i = 0; i < this.savingsAccountList.length; i++) {
-            tempArr[i] = this.savingsAccountList[i];
-        }
+        System.arraycopy(this.savingsAccountList, 0, tempArr, 0, this.savingsAccountList.length);
         tempArr[tempArr.length - 1] = savingsAccount;
         this.savingsAccountList = tempArr;
-
         return savingsAccount;
 
     }
@@ -182,12 +174,9 @@ public class AccountHolder implements Comparable<AccountHolder> {
         }
 
         CDAccount[] tempArr = new CDAccount[this.cdAccountList.length + 1];
-        for(int i = 0; i<this.cdAccountList.length; i++) {
-            tempArr[i] = this.cdAccountList[i];
-        }
+        System.arraycopy(this.cdAccountList, 0, tempArr, 0, this.cdAccountList.length + 1);
         tempArr[tempArr.length - 1] = newCDAccount;
         this.cdAccountList = tempArr;
-
         return newCDAccount;
     }
 
@@ -209,12 +198,9 @@ public class AccountHolder implements Comparable<AccountHolder> {
         }
 
         CDAccount[] tempArr = new CDAccount[this.cdAccountList.length + 1];
-        for(int i = 0; i < this.cdAccountList.length; i++) {
-            tempArr[i] = this.cdAccountList[i];
-        }
+        System.arraycopy(this.cdAccountList, 0, tempArr, 0, this.cdAccountList.length);
         tempArr[tempArr.length - 1] = cdAccount;
         this.cdAccountList = tempArr;
-
         return cdAccount;
     }
 
@@ -242,7 +228,7 @@ public class AccountHolder implements Comparable<AccountHolder> {
         return sum;
     }
 
-    static AccountHolder readFromString(String accountHolderData) throws Exception {
+    static AccountHolder readFromString(String accountHolderData) {
         String[] tempArr = accountHolderData.split(",");
         String tempFirstName = "", tempMidName = "", TempLastName = "", tempSSN = "";
 
@@ -254,6 +240,8 @@ public class AccountHolder implements Comparable<AccountHolder> {
         return new AccountHolder(tempFirstName, tempMidName, TempLastName, tempSSN);
     }
 
+    // TODO -- fix file writer (txn's)
+    // may need to swap loops to for i loops
     String writeToString() {
         StringBuilder sb = new StringBuilder(this.lastName).append(",").append(this.middleName).append(",").append(this.firstName).append(",").append(this.ssn).append(System.lineSeparator());
         sb.append(this.getNumberOfCheckingAccounts()).append(System.lineSeparator());
@@ -278,8 +266,6 @@ public class AccountHolder implements Comparable<AccountHolder> {
             for(Transaction txn: cd.getTransactions()) sb.append(txn.writeToString()).append(System.lineSeparator());
         }
 
-        // TODO-- add fraudqueue txn's to writer
-
         return sb.toString();
     }
 
@@ -289,9 +275,12 @@ public class AccountHolder implements Comparable<AccountHolder> {
 
     @Override
     public int compareTo(AccountHolder otherAccountHolder) {
-        if(this.getCombinedBalance() == otherAccountHolder.getCombinedBalance()) return 0;
+        return Double.compare(this.getCombinedBalance(), otherAccountHolder.getCombinedBalance());
+        /*
+         if(this.getCombinedBalance() == otherAccountHolder.getCombinedBalance()) return 0;
         else if(this.getCombinedBalance() < otherAccountHolder.getCombinedBalance()) return -1;
         else return 1;
+         */
     }
 
 }
